@@ -1,0 +1,120 @@
+<template>
+  <div>
+    <Navbar v-if="$store.state.user != null" />
+    <router-view/>
+  </div>
+</template>
+
+<script>
+import Navbar from './components/Navbar.vue';
+
+export default {
+  components: {
+    Navbar,
+  },
+};
+</script>
+
+<style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+html{
+  scroll-behavior: smooth;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f7f7f7;
+}
+
+a{
+  text-decoration: none;
+}
+
+img{
+  max-width:100%;
+  height:auto;
+  object-fit: cover;
+}
+
+button{
+  cursor:pointer;
+}
+
+form{
+  width:100%;
+  .form-group{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 20px;
+    input{
+      width:100%;
+      height: 30px;
+      font-size: 16px;
+      border:none;
+      border-bottom: 1px solid #aaa;
+    }
+  }
+
+  .form-checkbox{
+    width:100%;
+    display:grid;
+    margin-bottom: 10px;
+    grid-template-columns: 100px 1fr;
+    input{
+      height: 20px;
+      width:20px;
+    }
+  }
+
+  button{
+    padding: 10px 20px;
+    font-size: 20px;
+    border:none;
+    display:block;
+    margin: auto;
+    background-color:#1FBD70;
+    color:white;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    font-weight: 700;
+    &:hover{
+      transform: scale(1.1, 1.1);
+      box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+    }
+  }
+}
+
+.page{
+  padding: 8vh 20px;
+}
+
+.title{
+  width:100%;
+  margin-bottom: 20px;
+  h2{
+    font-weight: 700;
+  }
+  .line{
+    margin-top: 5px;
+    height: 4px;
+    width: 50px;
+    background-color:#1FBD70;
+  }
+}
+
+@media(min-width:1024px){
+  .page{
+    padding-left: 370px;
+  }
+}
+
+</style>
