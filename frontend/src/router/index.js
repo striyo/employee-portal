@@ -12,6 +12,7 @@ import Events from '../views/Events.vue';
 import Resources from '../views/Resources.vue';
 import Timesheets from '../views/Timesheets.vue';
 import ForgotPassword from '../views/ForgotPassword.vue';
+import ChangePassword from '../views/ChangePassword.vue';
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
     path: '/forgotpassword',
     name: 'Forgot Password',
     component: ForgotPassword,
+  },
+  {
+    path: '/changepassword/:user_id/:token',
+    name: 'Change Password',
+    component: ChangePassword,
   },
   {
     path: '/dashboard',

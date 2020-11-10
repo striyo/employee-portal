@@ -46,6 +46,21 @@ button{
   cursor:pointer;
 }
 
+.submit-btn{
+  padding: 10px 20px;
+  font-size: 20px;
+  border:none;
+  background-color:#1FBD70;
+  color:white;
+  transition: all 0.1s ease;
+  cursor: pointer;
+  font-weight: 700;
+  &:hover{
+    transform: scale(1.1, 1.1);
+    box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  }
+}
+
 form{
   width:100%;
   .form-group{
