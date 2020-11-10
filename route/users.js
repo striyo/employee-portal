@@ -5,7 +5,8 @@ const router = express.Router();
 // other dependencies
 const bcrypt = require('bcrypt');
 const generator = require('generate-password');
-const {getUser, getAllUser, createUser} = require('../model/UserModel.js');
+const {getUser, getAllUser, createUser, updatePassword} = require('../model/UserModel.js');
+const {createResetToken, deleteResetToken, getResetToken} = require('../model/PwdResetModel.js');
 const template = require('../config/emailTemplate.js');
 const mail = require('../config/email.js');
 
@@ -150,66 +151,107 @@ router.post('/forgotpassword', (req, res) => {
     });
   }
 
-  // check if user exists
-  let user = getUser(req.body.email);
+  let user = null;
+  let token = generator.generate({length:50, numbers:true});
 
-  user.then((data) => {
+  // check if user exists
+  getUser(req.body.email).then((data) => {
+    user = data;
     // if the user doesn't exist
     if (data[0] == null) {
-      console.log('No user found');
       return res.status(200).json({
         message: 'A password reset link has been has been sent to the specified email',
       });
     }
-    
-    // generate reset token
-    let user_id = data[0].user_id;
-    let token = generator.generate({length:50, numbers:true});
-    let currentDate = new Date();
-    let date = `${parseInt(currentDate.getMonth()) + 1}-${currentDate.getDate()}-${currentDate.getFullYear()}`;
-    currentDate.setHours(currentHours() + 1);
-    let time= `${currentDate.getHours()}:${currentDate.getMinutes()}`;
-    let datetime = `${date} ${time}`;
-    let link = `http://localhost:8080/changepassword/${user_id}/${token}`;
 
-    bcrypt.hash(token, 10, (err, hash) => {
-      if(err){
-        return res.status(500).json({
-          message: 'Internal server error in generating password reset link',
-        });
-      }
+    return bcrypt.hash(token, 10);
+  }).then((hash)=> {
+    return createResetToken(user[0].user_id, hash);
+  }).then(() => {
+    let link = `http://localhost:8080/changepassword/${user[0].user_id}/${token}`;
+    let mailInfo = {
+      from: '"Royal Emerald Portal" <portal@re-rx.com>',
+      to: req.body.email,
+      subject: "Royal Emerald Portal Password Reset",
+      html: template.passwordResetTemplate(link),
+    };
 
-      // create the token in the database
-      let pwdToken = createResetToken(user_id, hash, datetime);
+    return mail.transporter.sendMail(mailInfo);
+  }).then(() => {
+    return res.status(200).json({
+      message: 'A password reset link has been sent to the specified email. Please check your email for further instructions on how to reset your password.',
+    });
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).json({
+      message: 'Internal server error in creating a password reset form',
+    });
+  });
+});
 
-      pwdToken.then(() => {
-        // email the user the link
-        let mailInfo = {
-          from: '"Royal Emerald Portal" <portal@re-rx.com>',
-          to: req.body.email,
-          subject: "Royal Emerald Portal Password Reset",
-          html: template.passwordResetTemplate(link),
-        };
+// change password
+router.post('/changepassword', (req,res) => {
+  // check if input is filled
+  if(!req.body.password || !req.body.password2){
+    return res.status(422).json({
+      message: "Please fill out all required form fields",
+    });
+  }
 
-        // email the user
-        mail.transporter.sendMail(mailInfo,(err, info) => {
-          if (err) {
-            console.log(err);
-            return res.status(500).json({
-              message: 'Internal server error in sending email',
-            });
-          }
-          console.log(info);
-          return res.status(200).json({
-            message: 'A password reset link has been sent to the specified email. Please check your email for further instructions on how to reset your password.',
-          });
-        });
-      }).catch(() => {
-        return res.status(500).json({
-          message: 'Internal server error in generating password reset link',
-        });
+  // check if password matches
+  if(req.body.password != req.body.password2){
+    return res.status(422).json({
+      message: "Passwords do not match",
+    });
+  }
+
+  // check if password is 8 char or more
+  if( req.body.password.length < 8 ){
+    return res.status(422).json({
+      message: "Password must be atleast 8 characters",
+    });
+  }
+
+  let resetToken = null;
+
+  // get reset token
+  let token = getResetToken(req.body.user_id);
+  token.then((reset) => {
+    resetToken = reset;
+
+    // check if token exists and not expired
+    if (reset[0] == null) {
+      return res.status(401).json({
+        message: "The link is either invalid or has expired. Please send another request if you wish to reset your password."
+      });
+    }
+
+    // check if the token is valid
+    return bcrypt.compare(req.body.token, reset[0].token);
+  }).then((compareResult) => {
+    if(!compareResult){
+      return res.status(401).json({
+        message: "The link is either invalid or has expired. Please send another request if you wish to reset your password."
       })
-    })
+    }
+
+    // hash password
+    return bcrypt.hash(req.body.password, 10);
+  }).then((hash) => {
+    // update password
+    return updatePassword(req.body.user_id, hash);
+  }).then(() => {
+    // delete token and return success message
+    deleteResetToken(resetToken[0].reset_id);
+    return res.status(200).json({
+      message: "Your password was successfully reset",
+    });
+  }).catch((err) => {
+    // log any error
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error in resetting password",
+    });
   })
 });
 
