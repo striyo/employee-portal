@@ -4,7 +4,7 @@
         <h1>Total Hours</h1>
         <div class="row">
           <span> Pay Period Goes Here</span>
-          <h1 class="pay"><span>$10000</span></h1>
+          <h1 class="pay"><span>40 Hours</span></h1>
         </div>
     </form>
 </div>

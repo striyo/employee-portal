@@ -76,8 +76,8 @@ export default {};
 .ViewHours{
     box-shadow: 0 4px 4px rgba(0,0,0,0.1);
     padding: 20px;
-    width: 60rem;
-    // max-width: 400px;
+    // width: 60rem;
+    max-width: 60rem;
     background-color:white;
     margin-top: 2px;
     h1{

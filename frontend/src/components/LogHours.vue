@@ -12,11 +12,12 @@
 
           </div>
         <div class="bottom">
-              <div id="mealOut">
-                  <h3>Meal Out: </h3><input type="time">
-              </div>
+
               <div id="timeOut">
                   <h3>Time Out: </h3><input type="time">
+              </div>
+              <div id="mealOut">
+                  <h3>Meal Out: </h3><input type="time">
               </div>
         </div>
         <button>Submit!</button>
@@ -51,12 +52,12 @@ export default {};
     }
   }
 
-  #timeIn,#timeOut{
+  #timeIn,#mealOut{
     float: left;
     margin-left: 5rem;
   }
 
-  #mealIn,#mealOut{
+  #mealIn,#timeOut{
     float: right;
     margin-right: 5rem;
   }
