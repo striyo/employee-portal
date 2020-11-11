@@ -57,8 +57,26 @@ function getUser(email){
   })
 }
 
+
+function updatePassword(user_id, password){
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE users SET password = ? WHERE user_id = ?
+    `;
+
+    db.query(sql, [password, user_id], (err, result) => {
+      if( err ){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  })
+}
+
 module.exports = {
   getUser,
   createUser,
   getAllUser,
+  updatePassword,
 }

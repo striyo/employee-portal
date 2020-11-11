@@ -1,14 +1,17 @@
 <template>
-  <div class="forgotpassword">
+  <div class="changepassword">
     <img src="@/assets/logo.png" alt="">
     <div class="login-box">
       <h1>Password Recovery</h1>
-      <form @submit.prevent="forgotpassword">
-        <p style="margin-bottom: 10px">Please enter your email and we will email you a link to reset your password</p>
+      <form @submit.prevent="changepassword">
+        <p style="margin-bottom: 10px">Please enter your new password</p>
         <div class="form-group">
-          <input type="text" placeholder="Email" v-model="email">
+          <input type="password" placeholder="Password" v-model="password">
         </div>
-        <button>Send Email</button>
+        <div class="form-group">
+          <input type="password" placeholder="Re-enter your password" v-model="password2">
+        </div>
+        <button>Change Password</button>
       </form>
       <router-link to='/'>Login</router-link>
     </div>
@@ -19,22 +22,27 @@
 import axios from 'axios';
 
 export default {
-  name: 'Forgot Password',
+  name: 'Change Password',
   data() {
     return {
-      email: '',
+      password: '',
+      password2: '',
     };
   },
   methods: {
-    forgotpassword() {
+    changepassword() {
       // create request body
       let body = {
-        email: this.email,
+        user_id: this.$route.params.user_id,
+        token: this.$route.params.token,
+        password: this.password,
+        password2: this.password2,
       };
 
-      axios.post('/api/users/forgotpassword', body).then((res) => {
+      axios.post('/api/users/changepassword', body).then((res) => {
         console.log(res.data.message);
-        this.email = '';
+        this.password = '';
+        this.password2 = '';
       }).catch((err) => {
         console.log(err.response.data);
       });
@@ -44,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.forgotpassword{
+.changepassword{
   display:flex;
   justify-content: center;
   align-items: center;

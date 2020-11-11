@@ -1,25 +1,9 @@
 const db = require('./db.js');
 
-function createResetToken(user_id, token, expiration) {
+function createResetToken(user_id, token) {
   return new Promise((resolve, reject) => {
     const sql = `
-      INSERT INTO pwdReset(user_id, token, expiration) VALUES (?,?,?)
-    `;
-
-    db.query(sql, [user_id, token, expiration], (err, result) => {
-      if(err){
-        reject(err);
-      }
-
-      resolve(result);
-    })
-  });
-}
-
-function validateToken(user_id, token) {
-  return new Promise((resolve, reject) => {
-    const sql = `
-      SELECT * FROM pwdReset WHERE user_id = ? AND token = ? AND expiration >= NOW()
+      INSERT INTO pwdReset(user_id, token, expiration) VALUES (?,?,DATE_ADD(NOW(), INTERVAL 1 HOUR))
     `;
 
     db.query(sql, [user_id, token], (err, result) => {
@@ -32,7 +16,23 @@ function validateToken(user_id, token) {
   });
 }
 
-function deleteToken(reset_id) {
+function getResetToken(user_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT * FROM pwdReset WHERE user_id = ? AND expiration >= NOW()
+    `;
+
+    db.query(sql, [user_id], (err, result) => {
+      if(err){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  });
+}
+
+function deleteResetToken(reset_id) {
   return new Promise((resolve, reject) => {
     const sql = `
       DELETE FROM pwdReset WHERE reset_id = ?
@@ -50,6 +50,6 @@ function deleteToken(reset_id) {
 
 module.exports = {
   createResetToken,
-  validateToken,
-  deleteToken
+  getResetToken,
+  deleteResetToken
 };

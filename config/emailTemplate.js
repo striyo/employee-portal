@@ -62,5 +62,6 @@ function passwordResetTemplate(link){
 }
 
 module.exports = {
-  userInfoTemplate
+  userInfoTemplate,
+  passwordResetTemplate
 }
