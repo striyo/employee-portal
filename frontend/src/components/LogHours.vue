@@ -1,7 +1,10 @@
 <template>
 <div class="LogHours">
+    <div class="title">
+        <h2>Log Hours</h2>
+        <div class="line"></div>
+    </div>
     <form @click="submit">
-        <h1>Log Hours</h1>
           <div class="top">
               <div id="timeIn">
                   <h3>Time In: </h3><input type="time">
@@ -34,7 +37,7 @@ export default {};
     margin-top: 5rem;
     box-shadow: 0 4px 4px rgba(0,0,0,0.1);
     padding: 20px;
-    width: 30rem;
+    width: 20rem;
     // max-width: 400px;
     height: 20rem;;
     background-color:white;
@@ -53,20 +56,22 @@ export default {};
 
   #timeIn,#timeOut{
     float: left;
-    margin-left: 5rem;
+    margin-bottom: 1rem;
   }
 
   #mealIn,#mealOut{
     float: right;
-    margin-right: 5rem;
+    margin-bottom: 1rem;
   }
 
   .bottom{
       margin-top: 5rem;;
   }
-
   button{
-      margin-top: 10rem;
+     margin-top: 2rem;
+     margin-left: 0px;
+      margin-bottom: 3rem;
+      // background-color: blue;
   }
 
 </style>
