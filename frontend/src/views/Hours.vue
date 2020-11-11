@@ -1,6 +1,6 @@
 <template>
 <div class="hours page">
-    <h1>Login</h1>
+    <h1>Hours</h1>
     <div class="grid">
       <div class="left">
         <TotalHours />
