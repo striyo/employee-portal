@@ -11,13 +11,13 @@
       </div>
 
       <div class="nav-items">
-        <router-link to='/dashboard' ><i class="fas fa-home"></i> Dashboard</router-link>
-        <router-link to='/personal' ><i class="fas fa-user"></i> Personal</router-link>
-        <router-link to='/hours' ><i class="fas fa-clock"></i> Hours</router-link>
-        <router-link to='/events' ><i class="fas fa-calendar"></i> Events</router-link>
-        <router-link to='/resources' ><i class="fas fa-book-open"></i> Resources</router-link>
-        <router-link to='/Users' ><i class="fas fa-users"></i> Users</router-link>
-        <router-link to='/Timesheets' ><i class="fas fa-user-clock"></i> Timesheets</router-link>
+        <router-link to='/dashboard' :class="{'active': $route.name === 'Dashboard'}" ><i class="fas fa-home"></i> Dashboard</router-link>
+        <router-link to='/personal' :class="{'active': $route.name === 'Personal'}"><i class="fas fa-user"></i> Personal</router-link>
+        <router-link to='/hours' :class="{'active': $route.name === 'Hours'}"><i class="fas fa-clock"></i> Hours</router-link>
+        <router-link to='/events' :class="{'active': $route.name === 'Events'}"><i class="fas fa-calendar"></i> Events</router-link>
+        <router-link to='/resources' :class="{'active': $route.name === 'Resources'}"><i class="fas fa-book-open"></i> Resources</router-link>
+        <router-link to='/users' :class="{'active': $route.name === 'Users'}"><i class="fas fa-users"></i> Users</router-link>
+        <router-link to='/timesheets' :class="{'active': $route.name === 'Timesheets'}"><i class="fas fa-user-clock"></i> Timesheets</router-link>
       </div>
     </div>
   </div>
@@ -57,6 +57,11 @@ export default {
     },
     logout() {
       axios.post('/api/users/logout').then(() => {
+        let message = {
+          message: 'Logged Out',
+          error: false,
+        };
+        this.$store.dispatch('pushNotifications', message);
         this.$store.dispatch('deleteUser');
         this.$router.push('/');
       }).catch((err) => {
@@ -164,13 +169,13 @@ export default {
       display:block;
       width:100%;
       height: 15%;
-      color:white;
       padding-left:20px;
       font-size: 1.75em;
       display:flex;
       justify-content: flex-start;
       align-items: center;
       transition: all 0.1s ease;
+      color:white;
       &:hover{
         background-color:#fcfcfc;
         color: #1fbd70;
@@ -180,6 +185,10 @@ export default {
       }
     }
   }
+}
+.active{
+  background-color:#f7f7f7;
+  color: #1fbd70 !important;
 }
 
 @media(min-width: 1024px){

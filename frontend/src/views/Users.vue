@@ -30,15 +30,21 @@
           <button>Register</button>
         </form>
       </div>
+
+      <ManageEmployees/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import ManageEmployees from '@/components/ManageEmployees.vue';
 
 export default {
   name: 'Users',
+  components: {
+    ManageEmployees,
+  },
   data() {
     return {
       name: '',
@@ -93,6 +99,14 @@ export default {
       background-color:white;
       padding: 20px;
       box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+    }
+  }
+}
+
+@media(min-width:1300px){
+  .users{
+    .container{
+      grid-template-columns: 1fr 1fr;
     }
   }
 }

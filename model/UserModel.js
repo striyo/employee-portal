@@ -74,9 +74,43 @@ function updatePassword(user_id, password){
   })
 }
 
+function searchUsers(search){
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT user_id, name, email, phone, profile_picture, rate, salaried, is_admin, is_active FROM users WHERE name LIKE ? OR email like ?
+    `;
+
+    db.query(sql, [`%${search}%`, `%${search}%`], (err, result) => {
+      if( err ){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  })
+}
+
+function updateUser(user){
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE users SET name = ?, email = ?, phone = ?, salaried = ?, is_admin = ?, is_active = ?, rate = ? WHERE user_id = ?
+    `;
+
+    db.query(sql, [user.name, user.email, user.phone, user.salaried, user.is_admin, user.is_active, user.rate, user.user_id], (err, result) => {
+      if( err ){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  })
+}
+
 module.exports = {
   getUser,
   createUser,
   getAllUser,
   updatePassword,
+  searchUsers,
+  updateUser,
 }
