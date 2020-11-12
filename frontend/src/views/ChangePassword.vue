@@ -40,11 +40,21 @@ export default {
       };
 
       axios.post('/api/users/changepassword', body).then((res) => {
-        console.log(res.data.message);
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
         this.password = '';
         this.password2 = '';
       }).catch((err) => {
-        console.log(err.response.data);
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
       });
     },
   },

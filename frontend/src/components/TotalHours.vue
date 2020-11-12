@@ -1,0 +1,43 @@
+<template>
+<div class="TotalHours">
+      <div class="title">
+        <h2>Total Hour</h2>
+        <div class="line"></div>
+    </div>
+    <form @click="submit">
+        <div class="row">
+          <span> Pay Period Goes Here</span>
+          <h1 class="pay"><span>$10000</span></h1>
+        </div>
+    </form>
+</div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style lang="scss" scoped>
+.TotalHours{
+    box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 20rem;
+    // max-width: 400px;
+    background-color:white;
+    h1{
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    a{
+      text-align: center;
+      display:block;
+      margin-top: 10px;
+      color:#333;
+    }
+  }
+
+  .pay{
+    margin-left: 10rem;
+  }
+</style>

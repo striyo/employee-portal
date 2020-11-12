@@ -37,10 +37,19 @@ export default {
       };
 
       axios.post('/api/users/login', body).then((res) => {
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+        this.$store.dispatch('pushNotifications', message);
         this.$store.dispatch('setUser', res.data.user);
         this.$router.push('/dashboard');
       }).catch((err) => {
-        console.log(err.response.data);
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+        this.$store.dispatch('pushNotifications', message);
       });
     },
   },
