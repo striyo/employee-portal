@@ -1,7 +1,7 @@
 <template>
 <div class="hours page">
     <h1>Hours</h1>
-    <div class="row">
+    <div class="grid">
       <div class="left">
         <TotalHours />
         <LogHours />
@@ -41,5 +41,21 @@ export default {
 h1{
   margin-bottom: 2rem;
   margin-left:2rem;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+}
+
+@media screen and (max-width: 1300px) {
+  .grid {
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .right{
+    margin-top:1rem;
+  }
 }
 </style>
