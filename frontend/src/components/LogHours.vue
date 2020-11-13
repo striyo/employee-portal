@@ -1,77 +1,84 @@
 <template>
 <div class="LogHours">
-    <div class="title">
-        <h2>Log Hours</h2>
-        <div class="line"></div>
+  <div class="title">
+    <h2>Log Hours</h2>
+    <div class="line"></div>
+  </div>
+  <form @submit.prevent="submit">
+    <div class="form-row">
+      <div class="form-group">
+        <h3>Time In: </h3><input type="time" v-model="timein">
+      </div>
+      <div class="form-group">
+        <h3>Meal In: </h3><input type="time" v-model="mealin">
+      </div>
     </div>
-    <form @click="submit">
-          <div class="top">
-              <div id="timeIn">
-                  <h3>Time In: </h3><input type="time">
-              </div>
-              <div id="mealIn">
-                  <h3>Meal In: </h3><input type="time">
-              </div>
-
-          </div>
-        <div class="bottom">
-              <div id="mealOut">
-                  <h3>Meal Out: </h3><input type="time">
-              </div>
-              <div id="timeOut">
-                  <h3>Time Out: </h3><input type="time">
-              </div>
-        </div>
-        <button>Submit!</button>
-
-    </form>
+    <div class="form-row">
+      <div class="form-group">
+        <h3>Meal Out: </h3><input type="time" v-model="mealout">
+      </div>
+      <div class="form-group">
+        <h3>Time Out: </h3><input type="time" v-model="timeout">
+      </div>
+    </div>
+    <button>Save</button>
+  </form>
 </div>
 </template>
 
 <script>
-export default {};
+import axios from 'axios';
+
+export default {
+  name: 'Log Hours',
+  data() {
+    return {
+      mealin: null,
+      timein: null,
+      mealout: null,
+      timeout: null,
+    };
+  },
+  created() {
+    // get today's hours
+
+    // set the variables to those hours
+  },
+  methods: {
+    submit() {
+      let body = {
+        mealin: this.mealin,
+        timeine: this.timein,
+        mealout: this.mealout,
+        timeout: this.timeout,
+      };
+
+      axios.post('/api/hours', body).then((res) => {
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(res.data.message);
+      }).catch((err) => {
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(err.response.data.message);
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .LogHours{
-    margin-top: 5rem;
-    box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-    padding: 20px;
-    width: 20rem;
-    // max-width: 400px;
-    height: 20rem;;
-    background-color:white;
-    h1{
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    a{
-      text-align: center;
-      display:block;
-      margin-top: 10px;
-      color:#333;
-    }
-  }
-
-  #timeIn,#timeOut{
-    float: left;
-    margin-bottom: 1rem;
-  }
-
-  #mealIn,#mealOut{
-    float: right;
-    margin-bottom: 1rem;
-  }
-
-  .bottom{
-      margin-top: 5rem;;
-  }
-  button{
-     margin-top: 2rem;
-     margin-left: 0px;
-      margin-bottom: 3rem;
-      // background-color: blue;
-  }
-
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  background-color:white;
+}
 </style>
