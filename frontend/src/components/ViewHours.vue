@@ -1,27 +1,98 @@
 <template>
 <div class="ViewHours">
-    <form @click="submit">
-      <div class="title">
-        <h2>View Hour</h2>
-        <div class="line"></div>
+  <div class="title">
+    <h2>View Hour</h2>
+    <div class="line"></div>
+  </div>
+  <form @submit.prevent="submit">
+    <div class="form-row">
+      <div class="form-group">
+        <h3>Start Date</h3><input type="date" v-model="startDate">
+      </div>
+      <div class="form-group">
+        <h3>End Date</h3><input type="date" v-model="endDate">
+      </div>
     </div>
-        <div class="row">
-            <div >Start Date: <input type="date"></div>
-            <div >Start Date <input type="date"></div>
-            <button>Search</button>
-        </div>
-    </form>
+    <button>Search</button>
+  </form>
 
-    <div class="HoursDisplay">
-        <div class="result">
-            <label class="date">Date: <span>11/10/2020</span></label>
-            <br>
-            <label class="timeIn">Time In: <span>9:00</span></label>
-            <label class="lunchOut">Lunch Out: <span>12:30</span></label>
-            <label class="lunchIn">Lunch In: <span>9:00</span></label>
-            <label class="timeOut">Time Out: <span>12:30</span></label>
+  <div class="HoursDisplay">
+    <div class="result">
+      <h3>Date: 11/10/2020</h3>
+      <div class="row">
+        <div class="time-slots">
+          <p>Time In</p>
+          <p>9:00</p>
         </div>
+        <div class="time-slots">
+          <p>Meal In</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal Out</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Time Out</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Total</p>
+          <p>9 hours</p>
+        </div>
+      </div>
     </div>
+    <div class="result">
+      <h3>Date: 11/10/2020</h3>
+      <div class="row">
+        <div class="time-slots">
+          <p>Time In</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal In</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal Out</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Time Out</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Total</p>
+          <p>9 hours</p>
+        </div>
+      </div>
+    </div>
+    <div class="result">
+      <h3>Date: 11/10/2020</h3>
+      <div class="row">
+        <div class="time-slots">
+          <p>Time In</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal In</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal Out</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Time Out</p>
+          <p>9:00</p>
+        </div>
+        <div class="time-slots">
+          <p>Total</p>
+          <p>9 hours</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -31,56 +102,22 @@ export default {};
 
 <style lang="scss" scoped>
 .ViewHours{
-    box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-    min-width: 42rem;
-    // max-width: 400px;
-    background-color:white;
-    margin-top: 2px;
-    h1{
-      text-align: center;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  background-color:white;
+  padding: 20px;
+
+  .HoursDisplay{
+    .result{
       margin-bottom: 20px;
+      .row{
+        display:flex;
+        border-bottom: 2px solid #f7f7f7;
+        padding-bottom: 5px;
+        .time-slots{
+          margin-right: 10px;
+        }
+      }
     }
-
-    a{
-      text-align: center;
-      display:block;
-      margin-top: 10px;
-      color:#333;
-    }
   }
-
-  .ViewHours, .result{
-    padding: 1rem;
-    margin-left:1rem;
-    // margin-top: 2rem;
-  }
- .timeIn, .timeOut, .lunchIn, .lunchOut{
-     margin-right:1rem;
-  }
-  input{
-    //   margin-right:1rem;
-      margin-bottom: 1rem;
-  }
-
- button{
-    margin-left: 0px;
-      margin-bottom: 3rem;
-  }
-
-  @media screen and (max-width: 800px) {
-  .result {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    margin-bottom: 1rem;
-  }
-  .ViewHours{
-      min-width: 20rem;
-      margin-left:1rem;
-  }
-
-  .right{
-    margin-top:1rem;
-  }
-
 }
 </style>

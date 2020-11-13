@@ -66,6 +66,12 @@ button{
 
 form{
   width:100%;
+  .form-row{
+    display: flex;
+    .form-group{
+      margin-right: 10px;
+    }
+  }
   .form-group{
     width:100%;
     display:flex;
