@@ -78,6 +78,9 @@ form{
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
+    h3{
+      margin-bottom: 10px;
+    }
     margin-bottom: 20px;
     input{
       width:100%;
@@ -85,13 +88,22 @@ form{
       font-size: 16px;
       border:none;
       border-bottom: 1px solid #aaa;
+      font-family: 'Open Sans', sans-serif;
+    }
+    textarea{
+      width:100%;
+      min-height: 200px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 16px;
     }
   }
 
   .form-checkbox{
     width:100%;
-    display:grid;
-    margin-bottom: 10px;
+    h3{
+      margin-bottom: 10px;
+    }
+    margin-bottom: 20px;
     grid-template-columns: 100px 1fr;
     input{
       height: 20px;
