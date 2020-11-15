@@ -97,7 +97,42 @@
 </template>
 
 <script>
-export default {};
+import axios from 'axios';
+
+export default {
+  name: 'View Hours',
+  data() {
+    return {
+      startDate: '',
+      endDate: '',
+    };
+  },
+  methods: {
+    submit() {
+      let body = {
+        startDate: this.startDate,
+        endDate: this.endDate,
+      };
+      // console.log(this.startDate);
+      // console.log(this.endDate);
+      // console.log(body.startDate);
+      // console.log(body.endDate);
+      axios.post('/api/hours/search', body).then((res) => {
+        console.log(res);
+        // this.timein = res.data.hour[0].clock_in;
+        // this.timeout = res.data.hour[0].clock_out;
+        // this.mealin = res.data.hour[0].meal_in;
+        // this.mealout = res.data.hour[0].meal_out;
+      }).catch((err) => {
+        let message = {
+          message: err,
+          error: true,
+        };
+        this.$store.dispatch('pushNotifications', message);
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -105,7 +140,6 @@ export default {};
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   background-color:white;
   padding: 20px;
-
   .HoursDisplay{
     .result{
       margin-bottom: 20px;

@@ -45,6 +45,7 @@ router.post('/login', (req, res) => {
     }
     // store user data except their password
     let output = {
+      user_id:user.user_id,
       name: user.name,
       email: user.email,
       phone: user.phone,

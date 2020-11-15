@@ -4,13 +4,56 @@
     <h2>Total Hour</h2>
     <div class="line"></div>
   </div>
-  <p> Pay Period Goes Here</p>
-  <h1>$10000</h1>
+  <p> {{payPeriod}}</p>
+  <h1>{{totalHours}}</h1>
 </div>
 </template>
 
 <script>
-export default {};
+import axios from 'axios';
+
+export default {
+  name: 'Total Hour',
+  data() {
+    return {
+      totalHours: '',
+      payPeriod: '',
+    };
+  },
+  created() {
+    const today = new Date();
+    let startPeriod;
+    let endPeriod;
+    let total = 0;
+    if (today.getDate() < 15) {
+      startPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-1`;
+      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-14`;
+      this.payPeriod = `${(today.getMonth() + 1)}/1/${today.getFullYear()} - ${(today.getMonth() + 1)}/14/${today.getFullYear()}`;
+    } else {
+      startPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-15`;
+      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-31`;
+      this.payPeriod = `${(today.getMonth() + 1)}/15/${today.getFullYear()} - ${(today.getMonth() + 1)}/31/${today.getFullYear()}`;
+    }
+    // post
+    let body = {
+      startDate: startPeriod,
+      endDate: endPeriod,
+    };
+    axios.post('/api/hours/search', body).then((res) => {
+      let i = 0;
+      for (i; i < res.data.hour.length; i += 1) {
+        total += res.data.hour[i].total;
+      }
+      this.totalHours = total;
+    }).catch((err) => {
+      let message = {
+        message: err,
+        error: true,
+      };
+      this.$store.dispatch('pushNotifications', message);
+    });
+  },
+};
 </script>
 
 <style lang="scss" scoped>
