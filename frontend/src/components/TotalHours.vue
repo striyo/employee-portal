@@ -25,28 +25,15 @@ export default {
     let startPeriod;
     let endPeriod;
     let total = 0;
-    if (today.getDate() < 15) {
+    if (today.getDate() < '15') {
       startPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-1`;
-      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-${(today.getDate())}`;
-      this.payPeriod = `${(today.getMonth() + 1)}/1/${today.getFullYear()} - ${(today.getMonth() + 1)}/14/${today.getFullYear()}`;
+      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-14`;
+      this.payPeriod = `${(today.getMonth() + 1)}/1/${today.getFullYear()} - ${(today.getMonth() + 1)}/15/${today.getFullYear()}`;
     } else {
+      let lastday = new Date(today.getFullYear(), (today.getMonth() + 1), 0).getDate();
       startPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-15`;
-      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-${(today.getDate())}`;
-      // 31 days
-      if (((today.getMonth() + 1) === 4) || ((today.getMonth() + 1) === 6) || ((today.getMonth() + 1) === 9) || ((today.getMonth() + 1) === 11)) {
-        this.payPeriod = `${(today.getMonth() + 1)}/15/${today.getFullYear()} - ${(today.getMonth() + 1)}/30/${today.getFullYear()}`;
-      }
-      // Feb
-      if (((today.getMonth() + 1) === 2)) {
-        let leapYear = ((today.getFullYear() % 4 === 0) && (today.getFullYear() % 100 !== 0)) || (today.getFullYear() % 400 === 0);
-        if (leapYear) {
-          this.payPeriod = `${(today.getMonth() + 1)}/29/${today.getFullYear()} - ${(today.getMonth() + 1)}/30/${today.getFullYear()}`;
-        } else {
-          this.payPeriod = `${(today.getMonth() + 1)}/28/${today.getFullYear()} - ${(today.getMonth() + 1)}/30/${today.getFullYear()}`;
-        }
-      } else {
-        this.payPeriod = `${(today.getMonth() + 1)}/15/${today.getFullYear()} - ${(today.getMonth() + 1)}/31/${today.getFullYear()}`;
-      }
+      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-${lastday}`;
+      this.payPeriod = `${(today.getMonth() + 1)}/14/${today.getFullYear()} - ${(today.getMonth() + 1)}/${lastday}/${today.getFullYear()}`;
     }
     /**
      * if today is less than 14

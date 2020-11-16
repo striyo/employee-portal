@@ -72,13 +72,6 @@ export default {
       axios.post('/api/hours/search', body).then((res) => {
         // console.log(res);
         this.hours = res.data.hour;
-        console.log(this.hours);
-        // console.log(res.data.hour);
-        // console.log(hours);
-        // this.timein = res.data.hour[0].clock_in;
-        // this.timeout = res.data.hour[0].clock_out;
-        // this.mealin = res.data.hour[0].meal_in;
-        // this.mealout = res.data.hour[0].meal_out;
       }).catch((err) => {
         let message = {
           message: err,
