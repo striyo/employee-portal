@@ -15,84 +15,34 @@
     </div>
     <button>Search</button>
   </form>
+ <div class="HoursDisplay" v-for="hour in hours" :key="`hour_${hour.hour_id}`">
 
-  <div class="HoursDisplay">
     <div class="result">
-      <h3>Date: 11/10/2020</h3>
+      <h3>Date : {{hour.date}}</h3>
       <div class="row">
         <div class="time-slots">
           <p>Time In</p>
-          <p>9:00</p>
+          <p>{{hour.clock_in}}</p>
         </div>
         <div class="time-slots">
           <p>Meal In</p>
-          <p>9:00</p>
+          <p>{{hour.meal_in}}</p>
         </div>
         <div class="time-slots">
           <p>Meal Out</p>
-          <p>9:00</p>
+          <p>{{hour.meal_out}}</p>
         </div>
         <div class="time-slots">
           <p>Time Out</p>
-          <p>9:00</p>
+          <p>{{hour.clock_out}}</p>
         </div>
         <div class="time-slots">
           <p>Total</p>
-          <p>9 hours</p>
+          <p>{{hour.total}}</p>
         </div>
       </div>
     </div>
-    <div class="result">
-      <h3>Date: 11/10/2020</h3>
-      <div class="row">
-        <div class="time-slots">
-          <p>Time In</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Meal In</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Meal Out</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Time Out</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Total</p>
-          <p>9 hours</p>
-        </div>
-      </div>
-    </div>
-    <div class="result">
-      <h3>Date: 11/10/2020</h3>
-      <div class="row">
-        <div class="time-slots">
-          <p>Time In</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Meal In</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Meal Out</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Time Out</p>
-          <p>9:00</p>
-        </div>
-        <div class="time-slots">
-          <p>Total</p>
-          <p>9 hours</p>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 </div>
 </template>
 
@@ -105,6 +55,8 @@ export default {
     return {
       startDate: '',
       endDate: '',
+      hours: [],
+      // result: '',
     };
   },
   methods: {
@@ -118,7 +70,11 @@ export default {
       // console.log(body.startDate);
       // console.log(body.endDate);
       axios.post('/api/hours/search', body).then((res) => {
-        console.log(res);
+        // console.log(res);
+        this.hours = res.data.hour;
+        console.log(this.hours);
+        // console.log(res.data.hour);
+        // console.log(hours);
         // this.timein = res.data.hour[0].clock_in;
         // this.timeout = res.data.hour[0].clock_out;
         // this.mealin = res.data.hour[0].meal_in;
