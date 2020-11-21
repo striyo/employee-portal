@@ -1,7 +1,14 @@
 <template>
   <div class="events page">
     <h1>Events</h1>
-    <AddEvents/>
+     <div class="grid">
+      <div class="left">
+        <AddEvents/>
+      </div>
+      <div class="right">
+        <AddEvents/>
+      </div>
+    </div>
   </div>
 </template>
 
