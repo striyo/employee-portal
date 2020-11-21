@@ -1,13 +1,17 @@
 <template>
   <div class="events page">
     <h1>Events</h1>
+    <AddEvents/>
   </div>
 </template>
 
 <script>
-import AddEvents from '../components/AddEvents.vue'
+import AddEvents from '../components/AddEvents.vue';
 
 export default {
+  components: {
+    AddEvents,
+  },
 
 };
 </script>
