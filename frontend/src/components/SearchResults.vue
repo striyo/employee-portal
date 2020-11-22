@@ -4,6 +4,13 @@
     <h2>Search Results</h2>
     <div class="line"></div>
   </div>
+  <div>
+    Placeholder Result
+    <p>Nov 18, 2020 3:00PM</p>
+    <h2>Shareholder meetings</h2>
+    <button>edit</button>
+    <button>delete</button>
+  </div>
 </div>
 </template>
 
