@@ -36,7 +36,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .search{
   padding: 20px;
   background-color:white;
