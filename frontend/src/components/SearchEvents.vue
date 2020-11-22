@@ -8,11 +8,15 @@
       <div class="form-group">
         <input type="text" placeholder="Event Title" v-model="search">
       </div>
-      <div class="form-group">
-        <input type="date" placeholder="Start Date" v-model="search">
-      </div>
-      <div class="form-group">
-        <input type="date" placeholder="End Date" v-model="search">
+      <div class ="form-row">
+        <div class="form-group">
+          <p>Start Date:</p>
+          <input type="date" placeholder="Start Date" v-model="search">
+        </div>
+        <div class="form-group">
+          <p>End Date:</p>
+          <input type="date" placeholder="End Date" v-model="search">
+        </div>
       </div>
       <button>Search</button>
     </form>
@@ -30,7 +34,7 @@ export default {
   },
   methods: {
     searchEvents() {
-      //TODO
+      // TODO
     },
   },
 };
