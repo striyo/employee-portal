@@ -41,8 +41,8 @@ h1{
 }
 
 @media(min-width: 1024px) {
-  .grid {
-    grid-template-columns:1fr 1fr;
+  .learn{
+    display:none;
   }
 }
 </style>

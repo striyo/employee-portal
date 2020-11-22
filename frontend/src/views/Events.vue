@@ -1,15 +1,40 @@
 <template>
   <div class="events page">
     <h1>Events</h1>
+    <div class="grid">
+      <div class="left">
+          <AddEvents/>
+      </div>
+      <div>
+          <SearchEvents/>
+      </div>
+      <div class="right">
+        <SearchResults/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
+import AddEvents from '../components/AddEvents.vue';
+import SearchEvents from '../components/SearchEvents.vue';
+import SearchResults from '../components/SearchResults.vue';
 
+export default {
+  components: {
+    AddEvents,
+    SearchEvents,
+    SearchResults,
+  },
 };
 </script>
 
 <style>
+.grid{
+  width:100%;
+  display:grid;
+  gap: 20px;
+  grid-template-columns:1fr;
+}
 
 </style>
