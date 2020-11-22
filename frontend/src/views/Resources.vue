@@ -1,15 +1,37 @@
 <template>
   <div class="resources page">
-    <h1>Resources</h1>
+    <div class="col">
+      <RequestForm />
+    </div>
+    <div class="col">
+      <EmployeeSearch />
+    </div>
   </div>
 </template>
 
 <script>
-export default {
+import RequestForm from '@/components/RequestForm.vue';
+import EmployeeSearch from '@/components/EmployeeSearch.vue';
 
+export default {
+  name: 'Resources',
+  components: {
+    RequestForm,
+    EmployeeSearch,
+  },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.resources{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
 
+@media(min-width:1024px){
+  .resources{
+    grid-template-columns: 1fr 1fr;
+  }
+}
 </style>
