@@ -1,110 +1,106 @@
 <template>
 <div class="ViewHours">
-    <form @click="submit">
-        <h1>View Hours</h1>
-        <div class="row">
-            <label >Start Date</label>
-            <input type="date">
-            <label >Start Date</label>
-            <input type="date">
-            <button>Search</button>
-        </div>
-    </form>
-
-    <div class="HoursDisplay">
-        <div class="result">
-            <label>Date: </label>
-            <span>11/10/2020</span>
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-        </div>
-                <div class="result">
-            <label>Date: </label>
-            <span>11/10/2020</span>
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-        </div>
-                <div class="result">
-            <label>Date: </label>
-            <span>11/10/2020</span>
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-        </div>
-                <div class="result">
-            <label>Date: </label>
-            <span>11/10/2020</span>
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-
-            <label>Time In: </label>
-            <span>9:00</span>
-            <label>Lunch Out: </label>
-            <span>12:30</span>
-        </div>
+  <div class="title">
+    <h2>View Hour</h2>
+    <div class="line"></div>
+  </div>
+  <form @submit.prevent="submit">
+    <div class="form-row">
+      <div class="form-group">
+        <h3>Start Date</h3><input type="date" v-model="startDate">
+      </div>
+      <div class="form-group">
+        <h3>End Date</h3><input type="date" v-model="endDate">
+      </div>
     </div>
+    <button>Search</button>
+  </form>
+ <div class="HoursDisplay" v-for="hour in hours" :key="`hour_${hour.hour_id}`">
+
+    <div class="result">
+      <h3>Date : {{hour.date}}</h3>
+      <div class="row">
+        <div class="time-slots">
+          <p>Time In</p>
+          <p>{{hour.clock_in}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal In</p>
+          <p>{{hour.meal_in}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal Out</p>
+          <p>{{hour.meal_out}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Time Out</p>
+          <p>{{hour.clock_out}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Total</p>
+          <p>{{hour.total}}</p>
+        </div>
+      </div>
+    </div>
+</div>
 </div>
 </template>
 
 <script>
-export default {};
+import axios from 'axios';
+
+export default {
+  name: 'View Hours',
+  data() {
+    return {
+      startDate: '',
+      endDate: '',
+      hours: [],
+      // result: '',
+    };
+  },
+  methods: {
+    submit() {
+      let body = {
+        startDate: this.startDate,
+        endDate: this.endDate,
+      };
+      // console.log(this.startDate);
+      // console.log(this.endDate);
+      // console.log(body.startDate);
+      // console.log(body.endDate);
+      axios.post('/api/hours/search', body).then((res) => {
+        // console.log(res);
+        this.hours = res.data.hour;
+      }).catch((err) => {
+        let message = {
+          message: err,
+          error: true,
+        };
+        this.$store.dispatch('pushNotifications', message);
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .ViewHours{
-    box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-    padding: 20px;
-    // width: 60rem;
-    max-width: 60rem;
-    background-color:white;
-    margin-top: 2px;
-    h1{
-      text-align: center;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  background-color:white;
+  padding: 20px;
+  .HoursDisplay{
+    .result{
       margin-bottom: 20px;
+      .row{
+        display:flex;
+        border-bottom: 2px solid #f7f7f7;
+        padding-bottom: 5px;
+        .time-slots{
+          margin-right: 10px;
+        }
+      }
     }
-
-    a{
-      text-align: center;
-      display:block;
-      margin-top: 10px;
-      color:#333;
-    }
   }
-
-  .ViewHours, label{
-    margin: auto;
-    // width: 52rem;
-    // border: 2px solid green;
-    padding: 2rem;
-  }
-  input{
-      margin-right:8rem;
-      margin-bottom: 2rem;
-  }
-
-  button{
-      margin-bottom: 3rem;
-  }
+}
 </style>

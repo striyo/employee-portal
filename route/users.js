@@ -5,7 +5,7 @@ const router = express.Router();
 // other dependencies
 const bcrypt = require('bcrypt');
 const generator = require('generate-password');
-const {getUser, getAllUser, createUser, updatePassword} = require('../model/UserModel.js');
+const {getUser, getAllUser, createUser, updatePassword, searchUsers, updateUser} = require('../model/UserModel.js');
 const {createResetToken, deleteResetToken, getResetToken} = require('../model/PwdResetModel.js');
 const template = require('../config/emailTemplate.js');
 const mail = require('../config/email.js');
@@ -27,52 +27,52 @@ router.post('/login', (req, res) => {
     });
   }
 
+  let user = null;
+
   // query user table
-  let user = getUser(req.body.email);
-
-  user.then((data) => {
+  getUser(req.body.email).then((data) => {
     // If the user does not exist
-    if( data == null ){
-      return res.status(401).json({
-        message: 'Invalid Credentials',
-      });
+    if( data.length == 0 ){
+      return Promise.reject('Invalid Credentials', 401);
     }
-  
+    
+    user = data[0];
     // check if password matches
-    bcrypt.compare(req.body.password, data[0].password, (err, result) => {
-      if (!result) {
-        return res.status(401).json({
-          message: 'Invalid Credentials',
-        });
-      }
+    return bcrypt.compare(req.body.password, data[0].password);
+  }).then((result) => {
+    if(!result) {
+      return Promise.reject('Invalid Credentials', 401);
+    }
+    // store user data except their password
+    let output = {
+      user_id:user.user_id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      is_admin: user.is_admin,
+      is_active: user.is_active,
+      rate: user.rate,
+      salaried: user.salaried,
+      profile_picture: user.profile_picture,
+    }
 
-      // store user data except their password
-      let output = {
-        name: data[0].name,
-        email: data[0].email,
-        phone: data[0].phone,
-        is_admin: data[0].is_admin,
-        is_active: data[0].is_active,
-        rate: data[0].rate,
-        salaried: data[0].salaried,
-        profile_picture: data[0].profile_picture,
-      }
+    if (user.is_active == 0){
+      return Promise.reject('Invalid Credentials', 401);
+    }
 
-      req.session.user = output;
-      return res.status(200).json({
-        message: 'Successfully Logged In',
-        user: output,
-      });
-    })
+    req.session.user = output;
+    return res.status(200).json({
+      message: 'Successfully Logged In',
+      user: output,
+    });
   // Internal error
-  }).catch((err) => {
+  }).catch((err, status = 500) => {
     console.log(err);
-    return res.status(500).json({
-      message: 'Internal Error in querying user',
+    return res.status(status).json({
+      message: err,
     });
   })
 })
-
 
 // logout
 router.post('/logout', (req,res) => {
@@ -85,7 +85,6 @@ router.post('/logout', (req,res) => {
 // register
 router.post('/register', (req, res) => {
   const saltRounds = 10;
-  let hashed_password = '';
 
   // check if the person making request is logged in and an admin
   /*
@@ -107,37 +106,26 @@ router.post('/register', (req, res) => {
   let password = generator.generate({length:15, numbers:true});
 
   // hash password
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    hashed_password = hash;
-    let result = createUser(req.body.name, req.body.phone, req.body.email, hashed_password, req.body.rate, req.body.salaried, req.body.is_admin, true);
+  bcrypt.hash(password, saltRounds).then((hash) => {
+    return createUser(req.body.name, req.body.phone, req.body.email, hash, req.body.rate, req.body.salaried, req.body.is_admin, true)
+  }).then(() => {
+    // Email information
+    let mailInfo = {
+      from: '"Royal Emerald Portal" <portal@re-rx.com>',
+      to: req.body.email,
+      subject: "Royal Emerald Portal Account",
+      html: template.userInfoTemplate(req.body.name, req.body.email, password),
+    };
 
-    // check query results
-    result.then(() => { // success query
-      // Email information
-      let mailInfo = {
-        from: '"Royal Emerald Portal" <portal@re-rx.com>',
-        to: req.body.email,
-        subject: "Royal Emerald Portal Account",
-        html: template.userInfoTemplate(req.body.name, req.body.email, password),
-      };
-
-      // email the user
-      mail.transporter.sendMail(mailInfo,(err, info) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({
-            message: 'Internal server error in sending email',
-          });
-        }
-        console.log(info);
-        return res.status(200).json({
-          message: 'User created',
-        });
-      });
-    }).catch((err) => {
-      return res.status(500).json({
-        message: 'Internal server error in creating a user',
-      });
+    // email the user
+    return mail.transporter.sendMail(mailInfo);
+  }).then(() => {
+    return res.status(200).json({
+      message: 'User created',
+    });
+  }).catch((err, status = 500) => {
+    return res.status(status).json({
+      message: err,
     });
   });
 });
@@ -158,10 +146,8 @@ router.post('/forgotpassword', (req, res) => {
   getUser(req.body.email).then((data) => {
     user = data;
     // if the user doesn't exist
-    if (data[0] == null) {
-      return res.status(200).json({
-        message: 'A password reset link has been has been sent to the specified email',
-      });
+    if (data.length == 0) {
+      return Promise.reject('A password reset link has been has been sent to the specified email', 200);
     }
 
     return bcrypt.hash(token, 10);
@@ -181,10 +167,10 @@ router.post('/forgotpassword', (req, res) => {
     return res.status(200).json({
       message: 'A password reset link has been sent to the specified email. Please check your email for further instructions on how to reset your password.',
     });
-  }).catch((err) => {
+  }).catch((err, status = 500) => {
     console.log(err);
-    res.status(500).json({
-      message: 'Internal server error in creating a password reset form',
+    res.status(status).json({
+      message: err,
     });
   });
 });
@@ -220,19 +206,15 @@ router.post('/changepassword', (req,res) => {
     resetToken = reset;
 
     // check if token exists and not expired
-    if (reset[0] == null) {
-      return res.status(401).json({
-        message: "The link is either invalid or has expired. Please send another request if you wish to reset your password."
-      });
+    if (reset.length == 0) {
+      return Promise.reject('Invalid Credentials', 401);
     }
 
     // check if the token is valid
     return bcrypt.compare(req.body.token, reset[0].token);
   }).then((compareResult) => {
     if(!compareResult){
-      return res.status(401).json({
-        message: "The link is either invalid or has expired. Please send another request if you wish to reset your password."
-      })
+      return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
     }
 
     // hash password
@@ -242,17 +224,68 @@ router.post('/changepassword', (req,res) => {
     return updatePassword(req.body.user_id, hash);
   }).then(() => {
     // delete token and return success message
-    deleteResetToken(resetToken[0].reset_id);
+    return deleteResetToken(resetToken[0].reset_id);
+  }).then(() => {
     return res.status(200).json({
       message: "Your password was successfully reset",
     });
-  }).catch((err) => {
+  }).catch((err, status = 500) => {
     // log any error
     console.log(err);
-    return res.status(500).json({
-      message: "Internal server error in resetting password",
+    return res.status(status).json({
+      message: err,
     });
   })
 });
+
+router.post('/search', (req, res) => {
+  // check if user is logged in
+  if(req.session.user == null){
+    return res.status(401).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  // check if there's a search field
+  if (!req.body.search) {
+    return res.status(422).json({
+      message: 'Please fill out all required form fields',
+    });
+  }
+
+  // query db
+  searchUsers(req.body.search).then((users) => {
+    return res.status(200).json({
+      users: users,
+      message: 'Employees fetched',
+    });
+  }).catch((err) => {
+    console.log(err);
+    return res.status(500).json({
+      message: err,
+    });
+  });
+});
+
+router.put('/', (req, res) => {
+  // check if logged and has permission
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  // query db
+  updateUser(req.body.user).then(() => {
+    return res.status(200).json({
+      message: 'Employee info updated',
+    });
+  }).catch((err) => {
+    console.log(err);
+    return res.status(500).json({
+      message: err,
+    });
+  });
+})
 
 module.exports = router;
