@@ -23,7 +23,7 @@
         <h3>Start Time: </h3><input type="time" v-model="startTime">
       </div>
       <div class="form-group">
-        <h3>End Time: </h3><input type="date" v-model="endTime">
+        <h3>End Time: </h3><input type="time" v-model="endTime">
       </div>
     </div>
     <button>Submit</button>
