@@ -2,11 +2,9 @@
   <div class="events page">
     <h1>Events</h1>
     <div class="grid">
-      <div class= "left">
-        <div>
-          <AddEvents/>
-          <SearchEvents/>
-        </div>
+      <div class="left">
+          <AddEvents />
+          <SearchEvents />
       </div>
       <div class="right">
         <SearchResults/>
