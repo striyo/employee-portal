@@ -23,7 +23,7 @@
         <h3>Start Time: </h3><input type="time" v-model="startTime">
       </div>
       <div class="form-group">
-        <h3>End Time: </h3><input type="date" v-model="endTime">
+        <h3>End Time: </h3><input type="time" v-model="endTime">
       </div>
     </div>
     <button>Submit</button>
@@ -56,5 +56,6 @@ export default {
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   padding: 20px;
   background-color:white;
+  margin-bottom: 20px;
 }
 </style>
