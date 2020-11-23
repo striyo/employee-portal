@@ -3,10 +3,8 @@
     <h1>Events</h1>
     <div class="grid">
       <div class="left">
-          <AddEvents/>
-      </div>
-      <div>
-          <SearchEvents/>
+          <AddEvents />
+          <SearchEvents />
       </div>
       <div class="right">
         <SearchResults/>
@@ -29,12 +27,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .grid{
   width:100%;
   display:grid;
   gap: 20px;
-  grid-template-columns:1fr;
+  grid-template-columns:1fr 1fr;
 }
 
 </style>
