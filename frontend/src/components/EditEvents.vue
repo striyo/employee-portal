@@ -33,7 +33,6 @@
 
 <script>
 // import axios from 'axios';
-// this is a test comment
 export default {
   name: 'AddEvents',
   data() {
