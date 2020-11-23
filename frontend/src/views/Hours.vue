@@ -37,12 +37,12 @@ h1{
   width:100%;
   display:grid;
   gap: 20px;
-  grid-template-columns:1fr;
+  grid-template-columns:1fr 1fr;
 }
 
 @media(min-width: 1024px) {
-  .learn{
-    display:none;
+  .grid {
+    grid-template-columns:1fr 1fr;
   }
 }
 </style>
