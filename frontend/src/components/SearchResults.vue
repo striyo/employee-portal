@@ -4,20 +4,20 @@
     <h2>Search Results</h2>
     <div class="line"></div>
   </div>
-  <div class="grid">
-    <!-- <div v-for="event in results" :key="event.id">
-     <p>{{event.startDate}} {{event.startTime}} </p>
-      <h2> {{event.title}}</h2> -->
-      <div class="left">
-        <p>November 22, 2020 5PM</p>
-        <h3>Shareholder Meeting</h3>
-        </div>
-      <div class="right">
-      <button class="edit-btn">Edit</button>
-      <button class="delete-btn" @click="getRid">Delete</button>
-      </div>
+  <div
+    v-for="event in resultArr"
+    :key="event.id"
+  >
+    <div class="left">
+      <p>{{event.startDate}} {{event.startTime}}</p>
+      <h2>{{event.title}}</h2>
+    </div>
+    <div class="right">
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn" @click="getRid">Delete</button>
     </div>
   </div>
+</div>
 <!-- </div> -->
 </template>
 
@@ -26,10 +26,18 @@ import axios from 'axios';
 
 export default {
   name: 'SearchResults',
+  props: {
+    resultArr: Array,
+  },
   data() {
     return {
       events: [{ event_id: '3' }],
     };
+  },
+  watch: {
+    resultArr(val) {
+      this.events = val;
+    },
   },
 
   methods: {

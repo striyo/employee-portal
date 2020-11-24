@@ -43,8 +43,9 @@ export default {
         endDate: this.endDate,
       };
       axios.post('/api/events/search', body).then((res) => {
-        this.events = res.data.events;
-        console.log(this.events);
+        // this.events = res.data.events;
+        // console.log(this.events);
+        this.$emit('results', res.data.events);
       }).catch((err) => {
         let message = {
           message: err,

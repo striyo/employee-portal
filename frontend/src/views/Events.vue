@@ -4,10 +4,10 @@
     <div class="grid">
       <div class="left">
           <AddEvents />
-          <SearchEvents />
+          <SearchEvents @results='display' />
       </div>
       <div class="right">
-        <SearchResults/>
+        <SearchResults :resultArr='resultsArr' />
       </div>
     </div>
   </div>
@@ -19,10 +19,21 @@ import SearchEvents from '../components/SearchEvents.vue';
 import SearchResults from '../components/SearchResults.vue';
 
 export default {
+  name: 'Events',
   components: {
     AddEvents,
     SearchEvents,
     SearchResults,
+  },
+  data() {
+    return {
+      resultsArr: [],
+    };
+  },
+  methods: {
+    display(variable) {
+      this.resultsArr = variable;
+    },
   },
 };
 </script>
