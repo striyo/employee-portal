@@ -14,7 +14,7 @@
         </div>
       <div class="right">
       <button class="edit-btn">Edit</button>
-      <button class="delete-btn">Delete</button>
+      <button class="delete-btn" @click="getRid">Delete</button>
       </div>
     </div>
   </div>
@@ -22,15 +22,39 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
 export default {
-  name: 'AddEvents',
+  name: 'SearchResults',
   data() {
     return {
+      events: [{ event_id: '3' }],
     };
   },
+
   methods: {
+    getRid() {
+      let body = {
+        event_id: 1,
+      };
+      axios.post('/api/events/delete', body).then((res) => {
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(res.data.message);
+      }).catch((err) => {
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(err.response.data.message);
+      });
+    },
   },
 };
 </script>

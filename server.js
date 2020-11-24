@@ -38,6 +38,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/users', require('./route/users.js'));
 app.use('/api/hours', require('./route/hours.js'));
+app.use('/api/events', require('./route/events.js'));
 app.use('/api/resources', require('./route/resources.js'));
 
 app.listen(port, () => {

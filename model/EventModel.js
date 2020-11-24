@@ -14,7 +14,7 @@ const db = require('./db.js');
    */
   function createEvent( start_date, end_date, start_time, end_time, title, body){
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO events (start_date, end_date, start_time, end_time, title, body) VALUES (?, ?, ?, ?, ?, ?, ?);`;
+      const sql = `INSERT INTO events (start_date, end_date, start_time, end_time, title, body) VALUES (?, ?, ?, ?, ?, ?);`;
       db.query(sql, [start_date, end_date, start_time, end_time, title, body], (err, result) => {
         if( err ){
           reject(err);
@@ -32,14 +32,15 @@ const db = require('./db.js');
  * @param start_date
  * @param end_date
  */
-function getEvent(name, start_date, end_date){
+function getEvent(title, start_date, end_date){
   return new Promise((resolve, reject) => {
-    start_date = (start_date == null) ? 0: start_date;  //beginning of time by default
-    end_date = (end_date == null) ? 10000: end_date;  //beginning of time by default
-    if(name){
+    start_date = (start_date == null) ? "0000-01-01": start_date;  //beginning of time by default
+    end_date = (end_date == null) ? "3000-01-01": end_date;  //beginning of time by default
+    console.log("end date is " + end_date);
+    if(title){
       //query using the  name & dates
-      const sql = `select * from events where name=? and start_date >= CAST(? AS DATE) AND end_date <= CAST(? AS DATE);`;
-      db.query(sql, [name, start_date, end_date], (err, result) => {
+      const sql = `select * from events where title =? and start_date >= CAST(? AS DATE) AND end_date <= CAST(? AS DATE);`;
+      db.query(sql, [title, start_date, end_date], (err, result) => {
         if( err ){
           reject(err);
         }
@@ -93,13 +94,13 @@ function updateEvent(event_id, start_date, end_date, start_time, end_time, title
  * @param mealin
  * @param timeout
  */
-function deleteEvent(event_id, start_date, end_date, start_time, end_time, title, body){
+function deleteEvent(event_id){
   //edgecase: timeOut- must be after all, mealIn- must be after or at mealOut, mealOut must be after timeIn
   //query the databae to find where userID = currentUser and date = today
 
   return new Promise((resolve, reject) => {
     const sql = `
-    DELETE events WHERE event_id = ?
+    DELETE FROM events WHERE event_id = ?
     `;
     db.query(sql, [event_id], (err, result) => {
       if (err) {
@@ -110,10 +111,6 @@ function deleteEvent(event_id, start_date, end_date, start_time, end_time, title
   })
 
 }
-
-
-
-
 
 module.exports = {
   createEvent,

@@ -65,12 +65,7 @@ export default {
         startDate: this.startDate,
         endDate: this.endDate,
       };
-      // console.log(this.startDate);
-      // console.log(this.endDate);
-      // console.log(body.startDate);
-      // console.log(body.endDate);
       axios.post('/api/hours/search', body).then((res) => {
-        // console.log(res);
         this.hours = res.data.hour;
       }).catch((err) => {
         let message = {

@@ -7,7 +7,7 @@
   <form @submit.prevent="submit">
     <div class="form-row">
       <div class="form-group">
-        <h3>Name </h3><input type="text" v-model="name">
+        <h3>Title </h3><input type="text" v-model="title">
       </div>
     </div>
     <div class="form-row">
@@ -24,18 +24,35 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
 export default {
   name: 'SearchEvents',
   data() {
     return {
-      name: null,
+      title: null,
       startDate: null,
       endDate: null,
     };
   },
   methods: {
+    submit() {
+      let body = {
+        title: this.title,
+        startDate: this.startDate,
+        endDate: this.endDate,
+      };
+      axios.post('/api/events/search', body).then((res) => {
+        this.events = res.data.events;
+        console.log(this.events);
+      }).catch((err) => {
+        let message = {
+          message: err,
+          error: true,
+        };
+        this.$store.dispatch('pushNotifications', message);
+      });
+    },
   },
 };
 </script>

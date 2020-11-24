@@ -7,7 +7,7 @@
   <form @submit.prevent="submit">
     <div class="form-row">
       <div class="form-group">
-        <h3>Name </h3><input type="text" v-model="name">
+        <input type="text" v-model="title" placeholder="Title">
       </div>
     </div>
     <div class="form-row">
@@ -26,19 +26,24 @@
         <h3>End Time: </h3><input type="time" v-model="endTime">
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <input type="text" v-model="body" placeholder="Description">
+      </div>
+    </div>
     <button>Submit</button>
   </form>
 </div>
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
 export default {
   name: 'AddEvents',
   data() {
     return {
-      name: null,
+      title: null,
       startDate: null,
       endDate: null,
       startTime: null,
@@ -47,6 +52,34 @@ export default {
     };
   },
   methods: {
+    submit() {
+      let body = {
+        title: this.title,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        body: this.body,
+      };
+      console.log(body);
+      axios.post('/api/events/add', body).then((res) => {
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(res.data.message);
+      }).catch((err) => {
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(err.response.data.message);
+      });
+    },
   },
 };
 </script>
