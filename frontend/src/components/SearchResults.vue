@@ -7,9 +7,10 @@
   <div
     v-for="event in resultArr"
     :key="event.id"
+    class="grid"
   >
     <div class="left">
-      <p>{{event.startDate}} {{event.startTime}}</p>
+      <p>{{event.start_date}} {{event.start_time}}</p>
       <h2>{{event.title}}</h2>
     </div>
     <div class="right">
