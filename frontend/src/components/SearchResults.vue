@@ -4,39 +4,43 @@
     <h2>Search Results</h2>
     <div class="line"></div>
   </div>
-  <div class="grid">
-    <!-- <div v-for="event in results" :key="event.id">
-     <p>{{event.startDate}} {{event.startTime}} </p>
-      <h2> {{event.title}}</h2> -->
-      <div class="left">
-        <p>November 22, 2020 5PM</p>
-        <h3>Shareholder Meeting</h3>
-        </div>
-      <div class="right">
-      <button class="edit-btn">Edit</button>
-      <button class="delete-btn" @click="getRid">Delete</button>
+  <div v-for="event in events" v-bind:key="event.event_id">
+<!--    <button>-->
+      <p>Date: {{event.start_date}} ' - ' {{event.end_date}}</p>
+      <div class="row">
+        <h3>{{event.title}}</h3> <button class="edit-btn" @click="$emit('edit', event), edit=true"> edit</button ><button @click="deleteEvent(event)" class="delete-btn"> delete</button>
       </div>
-    </div>
+<!--    </button>-->
   </div>
-<!-- </div> -->
+  <div v-if="edit==true">
+    <EditEvents v-bind:event="event" v-bind:edit="edit"/>
+  </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
+import EditEvents from './EditEvents.vue';
 
 export default {
   name: 'SearchResults',
   data() {
     return {
-      events: [{ event_id: '3' }],
+      event: null,
+      edit: false,
     };
   },
-
+  components: {
+    EditEvents,
+  },
+  props: ['events'],
   methods: {
-    getRid() {
+    deleteEvent(event) {
+      console.log(`What is this ${event}`);
       let body = {
-        event_id: 1,
+        event_id: event.event_id,
       };
+      console.log(body);
       axios.post('/api/events/delete', body).then((res) => {
         let message = {
           message: res.data.message,
@@ -55,6 +59,9 @@ export default {
         console.log(err.response.data.message);
       });
     },
+    // view() {
+    //   console.log(this.event);
+    // },
   },
 };
 </script>
@@ -101,5 +108,11 @@ export default {
     box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   }
   margin-right: 20px;
+}
+
+button{
+  background: none;
+  border: none;
+  text-align: start;
 }
 </style>
