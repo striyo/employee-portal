@@ -20,13 +20,13 @@
     </div>
     <button @click="$emit('search', events)">Submit</button>
   </form>
-  <SearchResults v-bind:events="events"></SearchResults>
+  <!-- <SearchResults v-bind:events="events"></SearchResults> -->
 </div>
 </template>
 
 <script>
 import axios from 'axios';
-import SearchResults from './SearchResults.vue';
+// import SearchResults from './SearchResults.vue';
 
 export default {
   name: 'SearchEvents',
@@ -38,9 +38,6 @@ export default {
       events: null,
     };
   },
-  components: {
-    SearchResults,
-  },
   methods: {
     submit() {
       let body = {
@@ -49,8 +46,9 @@ export default {
         endDate: this.endDate,
       };
       axios.post('/api/events/search', body).then((res) => {
-        // this.$emit('new-events', res.data.events);
-        this.events = res.data.events;
+        // this.events = res.data.events;
+        // console.log(this.events);
+        this.$emit('results', res.data.events);
       }).catch((err) => {
         let message = {
           message: err,

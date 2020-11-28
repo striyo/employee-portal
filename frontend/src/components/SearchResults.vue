@@ -4,18 +4,25 @@
     <h2>Search Results</h2>
     <div class="line"></div>
   </div>
-  <div v-for="event in events" v-bind:key="event.event_id">
-<!--    <button>-->
-      <p>Date: {{event.start_date}} ' - ' {{event.end_date}}</p>
-      <div class="row">
-        <h3>{{event.title}}</h3> <button class="edit-btn" @click="$emit('edit', event), edit=true"> edit</button ><button @click="deleteEvent(event)" class="delete-btn"> delete</button>
-      </div>
-<!--    </button>-->
+  <div
+    v-for="event in resultArr"
+    :key="event.id"
+    class="grid"
+  >
+    <div class="left">
+      <p>{{setDate(event.start_date)}}   @{{setTime(event.start_time)}}</p>
+      <h2>{{event.title}}</h2>
+    </div>
+    <div class="right">
+        <button class="edit-btn" @click="setEvent(event), edit=true">Edit</button>
+        <button class="delete-btn" @click="deleteEvent">Delete</button>
+    </div>
+    <div v-if="edit==true">
+      <EditEvents v-bind:event="event" v-bind:edit="edit"/>
   </div>
-  <div v-if="edit==true">
-    <EditEvents v-bind:event="event" v-bind:edit="edit"/>
   </div>
-  </div>
+</div>
+<!-- </div> -->
 </template>
 
 <script>
@@ -24,17 +31,50 @@ import EditEvents from './EditEvents.vue';
 
 export default {
   name: 'SearchResults',
+  props: {
+    resultArr: Array,
+  },
+  components: {
+    EditEvents,
+  },
   data() {
     return {
       event: null,
       edit: false,
     };
   },
-  components: {
-    EditEvents,
+  watch: {
+    resultArr(val) {
+      this.events = val;
+    },
   },
-  props: ['events'],
+
   methods: {
+    setTime(time) {
+      let theTime = (time.split(':'));
+      let hour = theTime[0];
+      let minute = theTime[1];
+      if (hour < 12) {
+        return (hour.toString()).concat(':').concat(minute.toString()).concat(' AM');
+      }
+      hour %= 12;
+      return (hour.toString()).concat(':').concat(minute.toString()).concat(' PM');
+    },
+    setDate(paramDate) {
+      let theDay = new Date(paramDate);
+      let weekday = (theDay.toString().split(' ')[0]);
+      let month = (theDay.toString().split(' ')[1]);
+      let date = (theDay.toString().split(' ')[2]);
+      let year = (theDay.toString().split(' ')[3]);
+      console.log(month);
+      console.log(year);
+      return weekday.concat(', ').concat(date).concat(' ').concat(month)
+        .concat(' ')
+        .concat(year);
+    },
+    setEvent(param) {
+      this.event = param;
+    },
     deleteEvent(event) {
       console.log(`What is this ${event}`);
       let body = {
