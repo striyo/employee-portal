@@ -36,7 +36,6 @@ function getEvent(title, start_date, end_date){
   return new Promise((resolve, reject) => {
     start_date = (start_date == null) ? "0000-01-01": start_date;  //beginning of time by default
     end_date = (end_date == null) ? "3000-01-01": end_date;  //beginning of time by default
-    console.log("end date is " + end_date);
     if(title){
       //query using the  name & dates
       const sql = `select * from events where title =? and start_date >= CAST(? AS DATE) AND end_date <= CAST(? AS DATE);`;
@@ -71,7 +70,7 @@ function getEvent(title, start_date, end_date){
 function updateEvent(event_id, start_date, end_date, start_time, end_time, title, body){
   //edgecase: timeOut- must be after all, mealIn- must be after or at mealOut, mealOut must be after timeIn
   //query the databae to find where userID = currentUser and date = today
-
+  console.log(event_id);
   return new Promise((resolve, reject) => {
     const sql = `
     UPDATE events SET start_date = ?, end_date = ?, start_time = ?, end_time = ?, title = ?, body = ? WHERE event_id = ?

@@ -18,7 +18,7 @@
         <button class="delete-btn" @click="deleteEvent">Delete</button>
     </div>
     <div v-if="edit==true">
-      <EditEvents v-bind:event="event" v-bind:edit="edit"/>
+      <EditEvents v-bind:event="event" v-on:close-edit="edit=false"/>
   </div>
   </div>
 </div>
@@ -66,8 +66,6 @@ export default {
       let month = (theDay.toString().split(' ')[1]);
       let date = (theDay.toString().split(' ')[2]);
       let year = (theDay.toString().split(' ')[3]);
-      console.log(month);
-      console.log(year);
       return weekday.concat(', ').concat(date).concat(' ').concat(month)
         .concat(' ')
         .concat(year);

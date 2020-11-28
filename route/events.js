@@ -9,6 +9,7 @@ const {getEvent, createEvent, updateEvent, deleteEvent,} = require('../model/Eve
 //send the post request
 router.post('/add', (req, res) => {
   createEvent(req.body.startDate, req.body.endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.body).then(()=>{
+
     return res.status(200).json({
       message: 'Your event has been updated.',
     });
@@ -22,7 +23,7 @@ router.post('/add', (req, res) => {
 
 //send the post request
 router.post('/search', (req, res) => {
-  getEvent(req.body.title, req.body.startdDate, req.body.endDate).then((events)=>{
+  getEvent(req.body.title, req.body.startDate, req.body.endDate).then((events)=>{
     return res.status(200).json({
       message: 'Events found',
       events:events,
@@ -50,4 +51,23 @@ router.post('/delete', (req, res) => {
   });
 })
 
+//delete event
+//send the post request
+router.post('/update', (req, res) => {
+  console.log("update post is hit");
+  console.log('event id : ' + req.body.id);
+  let startDate = new Date(req.body.startDate);
+  let endDate = new Date(req.body.endDate);
+  updateEvent(req.body.id, startDate,endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.bodyParagraph).then(()=>{
+    return res.status(200).json({
+      message: 'Your event has been updated.',
+    });
+  }).catch((err)=>{
+    console.log('there is an error');
+    console.log(err);
+    return res.status(500).json({
+      message: err,
+    });
+  });
+})
 module.exports = router;
