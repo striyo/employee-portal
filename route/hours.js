@@ -5,7 +5,7 @@ const router = express.Router();
 //user model
 const { get, getAllUser, createUser, updatePassword, searchUsers, updateUser } = require('../model/UserModel.js');
 //hourModel
-const { getHours, updateHours, createHours } = require('../model/HourModel');
+const { getHours, updateHours, createHours, adminViewHours } = require('../model/HourModel');
 
 //send the post request
 router.post('/log', (req, res) => {
@@ -63,14 +63,27 @@ router.post('/log', (req, res) => {
 
 })
 
-//makes a reqs
+//seraches for all hours between two dates for the current employee
 router.post('/search', (req, res) => {
-    //admit - if admin specify email req.session.user.is_admin
-    //for pleabs
     getHours(req.body.startDate, req.body.endDate, req.session.user.user_id).then((hour) => {
         return res.status(200).json({
             message: "Hours found",
             hour: hour,
+        });
+    }).catch((err) => {
+        console.log(err);
+        return res.status(500).json({
+            message: err,
+        });
+    });
+})
+
+//searches for all hours from a searched employee and between two dates
+router.post('/id', (req, res) => {
+    adminViewHours(req.body.search, req.body.startDate, req.body.endDate).then((hours) => {
+        return res.status(200).json({
+            message: "Hours found",
+            hours: hours,
         });
     }).catch((err) => {
         console.log(err);
