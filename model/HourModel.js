@@ -86,7 +86,7 @@ function getHours(start_date, end_date, user_id){
  
      return new Promise((resolve, reject) => {
        const sql = `
-       DELETE FROM hours WHERE hour_id = ?
+       DELETE FROM hours WHERE hours_id = ?
        `;
  
        db.query(sql, [hour_id], (err, result) => {

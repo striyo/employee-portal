@@ -117,8 +117,8 @@ router.post('/search', (req, res) => {
 router.post('/delete', (req, res) => {
   //admit - if admin specify email req.session.user.is_admin
   //for pleabs
-  // console.log(req.session.user.user_id);
-  deleteHours(req.body.hour_id).then(() =>{
+  // console.log('this is the hour id'+req.body.hours_id);
+  deleteHours(req.body.hours_id).then(() =>{
     return res.status(200).json({
       message: "Hours deleted",
     });
@@ -137,7 +137,6 @@ router.post('/admin/search', (req, res) => {
   searchUsers(req.body.searchID).then((user) =>{
   id = (user[0].user_id);
     getHours(req.body.startDate, req.body.endDate, id).then((hour) =>{
-      console.log(hour);
       return res.status(200).json({
         message: "Hours found",
         hour: hour,

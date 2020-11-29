@@ -31,7 +31,7 @@
         </div>
         <div class="form-row">
           <button class="cancel-btn" @click="$emit('close-edit')">Cancel</button>
-          <button class="edit-btn" type="submit">Save</button>
+          <button class="edit-btn" type="submit" >Save</button>
         </div>
       </form>
     </div>
