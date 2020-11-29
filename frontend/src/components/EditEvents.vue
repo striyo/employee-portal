@@ -79,6 +79,12 @@ export default {
         id: this.id,
       };
       axios.post('/api/events/update', body).then(() => {
+        let message = {
+          message: 'Saved!',
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
       }).catch((err) => {
         let message = {
           message: err,

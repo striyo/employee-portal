@@ -66,13 +66,6 @@ router.post('/log', (req, res) => {
 
 //UPDATE HOURS BY ADMIN
 router.post('/update', (req, res) => {
-  // time constraints
-  //   if ((req.body.timein > req.body.mealin) || (req.body.mealin > req.body.mealout) ||
-  //       (req.body.mealout > req.body.timeout)) {
-  //     return res.status(422).json({
-  //       message: "Hours do match time constraints",
-  //     });
-  //   }
   let date = new Date(req.body.date);
 
   console.log("date  " + req.body.timein);
