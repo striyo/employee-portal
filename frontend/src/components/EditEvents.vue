@@ -31,7 +31,7 @@
         </div>
         <div class="form-row">
           <button class="cancel-btn" @click="$emit('close-edit')">Cancel</button>
-          <button class="edit-btn" type="submit">Save</button>
+          <button class="edit-btn" type="submit" >Save</button>
         </div>
       </form>
     </div>
@@ -79,6 +79,12 @@ export default {
         id: this.id,
       };
       axios.post('/api/events/update', body).then(() => {
+        let message = {
+          message: 'Saved!',
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
       }).catch((err) => {
         let message = {
           message: err,
