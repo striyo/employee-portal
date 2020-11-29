@@ -75,8 +75,33 @@ function getHours(start_date, end_date, user_id){
     });
   }
 
+/**
+  * Delete Hours: delete the current hours for today
+  * 
+  * @param hour_id
+  */
+   function deleteHours(hour_id){
+     //edgecase: timeOut- must be after all, mealIn- must be after or at mealOut, mealOut must be after timeIn
+     //query the databae to find where userID = currentUser and date = today
+ 
+     return new Promise((resolve, reject) => {
+       const sql = `
+       DELETE FROM hours WHERE hour_id = ?
+       `;
+ 
+       db.query(sql, [hour_id], (err, result) => {
+         if (err) {
+           reject(err);
+         }
+         resolve(result);
+       })
+     })
+ 
+   }
+
 module.exports = {
   getHours,
   updateHours,
   createHours,
+  deleteHours,
 }

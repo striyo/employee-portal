@@ -15,7 +15,7 @@
     </div>
     <div class="right">
         <button class="edit-btn" @click="setEvent(event), edit=true">Edit</button>
-        <button class="delete-btn" @click="deleteEvent">Delete</button>
+        <button class="delete-btn" @click="deleteEvent(event)">Delete</button>
     </div>
     <div v-if="edit==true">
       <EditEvents v-bind:event="this.event" v-on:close-edit="edit=false"/>

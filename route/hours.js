@@ -6,7 +6,7 @@ module.exports = router;
 //user model
 const {get, getAllUser, createUser, updatePassword, searchUsers, updateUser} = require('../model/UserModel.js');
 //hourModel
-const {getHours, updateHours, createHours} = require('../model/HourModel');
+const {getHours, updateHours, createHours, deleteHours} = require('../model/HourModel');
 
 //send the post request
 router.post('/log', (req, res) => {
@@ -104,6 +104,23 @@ router.post('/search', (req, res) => {
     return res.status(200).json({
       message: "Hours found",
       hour: hour,
+    });
+  }).catch((err) => {
+    console.log(err);
+    return res.status(500).json({
+      message: err,
+    });
+  });
+})
+
+//makes a reqs
+router.post('/delete', (req, res) => {
+  //admit - if admin specify email req.session.user.is_admin
+  //for pleabs
+  // console.log(req.session.user.user_id);
+  deleteHours(req.body.hour_id).then(() =>{
+    return res.status(200).json({
+      message: "Hours deleted",
     });
   }).catch((err) => {
     console.log(err);
