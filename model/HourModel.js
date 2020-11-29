@@ -82,11 +82,12 @@ function getHours(start_date, end_date, user_id){
   */
    function deleteHours(hour_id){
      //edgecase: timeOut- must be after all, mealIn- must be after or at mealOut, mealOut must be after timeIn
-     //query the databae to find where userID = currentUser and date = today
+     //query the database to find where userID = currentUser and date = today
+     console.log(hour_id);
  
      return new Promise((resolve, reject) => {
        const sql = `
-       DELETE FROM hours WHERE hour_id = ?
+       DELETE FROM hours WHERE hours_id = ?
        `;
  
        db.query(sql, [hour_id], (err, result) => {

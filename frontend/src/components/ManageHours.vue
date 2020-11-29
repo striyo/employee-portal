@@ -20,7 +20,7 @@
       </div>
       <button>Search</button>
     </form>
-    <div class="HoursDisplay" v-for="hour in hours" :key="`hour_${hour.hour_id}`">
+    <div class="HoursDisplay" v-for="hour in hours" :key="`hour_${hour.hours_id}`">
       <div class="result">
         <h3>{{setDate(hour.date)}}</h3>
         <div class="row">
@@ -48,7 +48,7 @@
             <button class="save-btn" @click=save(hour.clock_in,hour.meal_in,hour.meal_out,hour.clock_out,hour.date,hour.user_id)>Save</button>
           </div>
           <div>
-            <button class="delete-btn" @click=delete(hour.hour_id)>Delete</button>
+            <button class="delete-btn" @click=deleteHours(hour.hours_id)>Delete</button>
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default {
         this.$store.dispatch('pushNotifications', message);
       });
     },
-    delete(hourID) {
+    deleteHours(hourID) {
       let body = {
         hour_id: hourID,
       };
@@ -135,8 +135,6 @@ export default {
       let month = (theDay.toString().split(' ')[1]);
       let date = (theDay.toString().split(' ')[2]);
       let year = (theDay.toString().split(' ')[3]);
-      console.log(month);
-      console.log(year);
       return weekday.concat(', ').concat(date).concat(' ').concat(month)
         .concat(' ')
         .concat(year);

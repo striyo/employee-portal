@@ -66,13 +66,6 @@ router.post('/log', (req, res) => {
 
 //UPDATE HOURS BY ADMIN
 router.post('/update', (req, res) => {
-  // time constraints
-  //   if ((req.body.timein > req.body.mealin) || (req.body.mealin > req.body.mealout) ||
-  //       (req.body.mealout > req.body.timeout)) {
-  //     return res.status(422).json({
-  //       message: "Hours do match time constraints",
-  //     });
-  //   }
   let date = new Date(req.body.date);
 
   console.log("date  " + req.body.timein);
@@ -137,7 +130,6 @@ router.post('/admin/search', (req, res) => {
   searchUsers(req.body.searchID).then((user) =>{
   id = (user[0].user_id);
     getHours(req.body.startDate, req.body.endDate, id).then((hour) =>{
-      console.log(hour);
       return res.status(200).json({
         message: "Hours found",
         hour: hour,
