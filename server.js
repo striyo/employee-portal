@@ -25,7 +25,7 @@ app.use(session({
   resave: false,
   store: sessionStore,
   cookie: {
-    maxAge: 60 * 60 * 1000 // 1 hour
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
   }
 }))
 app.use((req, res, next) => {
@@ -38,7 +38,9 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/users', require('./route/users.js'));
 app.use('/api/hours', require('./route/hours.js'));
+app.use('/api/events', require('./route/events.js'));
 app.use('/api/resources', require('./route/resources.js'));
+app.use('/api/timesheets', require('./route/timesheets.js'));
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

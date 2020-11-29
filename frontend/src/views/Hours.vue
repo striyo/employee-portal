@@ -6,6 +6,7 @@
       <LogHours />
     </div>
     <div class="right">
+      <ViewTimesheets />
       <ViewHours />
     </div>
   </div>
@@ -16,12 +17,14 @@
 import TotalHours from '../components/TotalHours.vue';
 import LogHours from '../components/LogHours.vue';
 import ViewHours from '../components/ViewHours.vue';
+import ViewTimesheets from '../components/ViewTimesheets.vue';
 
 export default {
   components: {
     TotalHours,
     LogHours,
     ViewHours,
+    ViewTimesheets,
   },
 };
 </script>

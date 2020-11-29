@@ -17,6 +17,8 @@
     }
     body{
       padding: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.8em;
     }
     .title{
       width:100%;
@@ -37,34 +39,110 @@
       border: solid 1px #666;
       min-height: 100px;
     }
+    .time-table{
+      margin: auto;
+      margin-bottom: 20px;
+    }
+    .table{
+      background-color:#f7f7f7;
+      border: solid 1px #333;
+      width:100%;
+      border-collapse: collapse;
+    }
+
+    .table th{
+      text-align: left;
+      padding: 5px;
+      border: 1px solid #333;
+    }
+    .table td{
+      padding: 2px 5px;
+      border: 1px solid #dddddd;
+    }
+    .table tr:nth-child(odd) {
+      background-color: #d6d6d6;
+    }
+    .table-label{
+      border-bottom: solid 5px #333;
+      background-color:#15588f !important;
+      color:white;
+    }
+    
+    .signature{
+      width:100%;
+      margin-top: 50px;
+    }
+
+    .signature tr td{
+      border-top: 1px solid #333;
+    }
   </style>
 </head>
 <body>
   <img src="https://royalemeraldrx.com/img/mainlogo.png">  
   <div class="title">
-    <h1>Purchase Request</h1>
-    <h3>From: Totee Setthachuea</h3>
-    <h4>Date</h4>
+    <h1>Timesheet</h1>
+    <h3>${data.startDate} - ${data.endDate}</h3>
+    <p>${data.user.name}</p>
   </div>
-  <div class="input">
-    <h3>Department</h3>
-    <p>Tech</p>
+  <div class="time-table">
+    <table class="table">
+      <tr class="table-label">
+        <th>Date</th>
+        <th>Time In</th>
+        <th>Meal In</th>
+        <th>Meal Out</th>
+        <th>Time Out</th>
+        <th>Total</th>
+      </tr>
+      <tr>
+        <td>7/12</td>
+        <td>9:00</td>
+        <td>12:00</td>
+        <td>1:00</td>
+        <td>5:00</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>7/12</td>
+        <td>9:00</td>
+        <td>12:00</td>
+        <td>1:00</td>
+        <td>5:00</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>All</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>14</td>
+      </tr>
+    </table>
   </div>
-  <div class="input">
-    <h3>Items, quantities, and prices</h3>
-    <div class="box">
-      <p>reason</p>
-    </div>
+  <div class="time-table">
+    <table class="table">
+      <tr class="table-label">
+        <th>Total Hours</th>
+        <th>Rate/Hr</th>
+        <th>Total Pay</th>
+      </tr>
+      <tr>
+        <td>14</td>
+        <td>20</td>
+        <td>$280</td>
+      </tr>
+    </table>
   </div>
-  <div class="input">
-    <h3>Purpose</h3>
-    <div class="box">
-      <p>reason</p>
-    </div>
-  </div>
-  <div class="input">
-    <h3>Total</h3>
-    <p>$total</p>
-  </div>
+
+  <table class="signature">
+    <tr>
+      <td>Employee Signature</td>
+      <td>Date</td>
+      <td>Manager Signature</td>
+      <td>Date</td>
+    </tr>
+  </table>
 </body>
 </html>

@@ -4,6 +4,7 @@
       <RequestForm />
     </div>
     <div class="col">
+      <Files/>
       <EmployeeSearch />
     </div>
   </div>
@@ -12,12 +13,14 @@
 <script>
 import RequestForm from '@/components/RequestForm.vue';
 import EmployeeSearch from '@/components/EmployeeSearch.vue';
+import Files from '@/components/Files.vue';
 
 export default {
   name: 'Resources',
   components: {
     RequestForm,
     EmployeeSearch,
+    Files,
   },
 };
 </script>
