@@ -18,7 +18,7 @@
         <button class="delete-btn" @click="deleteEvent">Delete</button>
     </div>
     <div v-if="edit==true">
-      <EditEvents v-bind:event="event" v-on:close-edit="edit=false"/>
+      <EditEvents v-bind:event="this.event" v-on:close-edit="edit=false"/>
   </div>
   </div>
 </div>
