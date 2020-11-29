@@ -1,17 +1,20 @@
 <template>
   <div class="timesheets page">
     <GenerateTimesheets />
+    <ManageHours/>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import GenerateTimesheets from '@/components/GenerateTimesheets.vue';
+import ManageHours from '@/components/ManageHours.vue';
 
 export default {
   name: 'Timesheets',
   components: {
     GenerateTimesheets,
+    ManageHours,
   },
   data() {
     return {
