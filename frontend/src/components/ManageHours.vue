@@ -48,7 +48,7 @@
             <button class="save-btn" @click=save(hour.clock_in,hour.meal_in,hour.meal_out,hour.clock_out,hour.date,hour.user_id)>Save</button>
           </div>
           <div>
-            <button class="delete-btn">Delete</button>
+            <button class="delete-btn" @click=delete(hour.hour_id)>Delete</button>
           </div>
         </div>
       </div>
@@ -98,6 +98,19 @@ export default {
       };
       axios.post('/api/hours/update', body).then((res) => {
         this.hours = res.data.hour;
+      }).catch((err) => {
+        let message = {
+          message: err,
+          error: true,
+        };
+        this.$store.dispatch('pushNotifications', message);
+      });
+    },
+    delete(hourID) {
+      let body = {
+        hour_id: hourID,
+      };
+      axios.post('/api/hours/delete', body).then(() => {
       }).catch((err) => {
         let message = {
           message: err,
