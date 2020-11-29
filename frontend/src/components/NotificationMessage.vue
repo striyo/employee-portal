@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div :class="{'notifmessage': true, 'error': message.error, 'regular': !message.error}" v-if="show">
+    <div :class="{'notifmessage': true, 'error': message.error, 'regular': !message.error}" v-if="show" @click="deleteMessage" style="cursor:pointer">
       <p>{{message.message}}</p>
     </div>
   </transition>
@@ -12,17 +12,27 @@ export default {
   props: ['message'],
   created() {
     this.show = true;
-    setTimeout(() => {
+    this.firstTimer = setTimeout(() => {
       this.show = false;
-      setTimeout(() => {
+      this.secondTimer = setTimeout(() => {
         this.$emit('delete-message', this.message.id);
       }, 1000);
-    }, 5000);
+    }, 10000);
   },
   data() {
     return {
       show: false,
+      firstTimer: null,
+      secondTimer: null,
     };
+  },
+  methods: {
+    deleteMessage() {
+      this.show = false;
+      clearTimeout(this.firstTimer);
+      clearTimeout(this.secondTimer);
+      this.$emit('delete-message', this.message.id);
+    },
   },
 };
 </script>

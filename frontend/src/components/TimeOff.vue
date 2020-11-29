@@ -1,15 +1,15 @@
 <template>
   <form @submit.prevent="timeoff">
     <div class="form-group">
-      <h3>Start Date</h3>
+      <h3>Start Date <span class="required">*</span></h3>
       <input type="date" v-model="startDate">
     </div>
     <div class="form-group">
-      <h3>End Date</h3>
+      <h3>End Date <span class="required">*</span></h3>
       <input type="date" v-model="endDate">
     </div>
     <div class="form-group">
-      <h3>Reason</h3>
+      <h3>Reason <span class="required">*</span></h3>
       <textarea v-model="reason"></textarea>
     </div>
     <button>Send</button>
@@ -30,6 +30,7 @@ export default {
   },
   methods: {
     timeoff() {
+      this.$emit('loading');
       let body = {
         startDate: this.startDate,
         endDate: this.endDate,
@@ -47,7 +48,9 @@ export default {
         this.reason = '';
 
         this.$store.dispatch('pushNotifications', message);
+        this.$emit('finished');
       }).catch((err) => {
+        this.$emit('finished');
         let message = {
           message: err.response.data.message,
           error: true,
@@ -60,6 +63,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+  form{
+    position: relative;
+  }
 </style>

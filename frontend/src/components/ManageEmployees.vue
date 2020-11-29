@@ -1,5 +1,9 @@
 <template>
   <div class="search">
+    <div class="loading" v-if="loading">
+      <div class="circle">
+      </div>
+    </div>
     <div class="title">
       <h2>Manage Employee Accounts</h2>
       <div class="line"></div>
@@ -62,15 +66,18 @@ export default {
     return {
       users: [],
       search: '',
+      loading: false,
     };
   },
   methods: {
     searchEmployee() {
+      this.loading = true;
       let body = {
         search: this.search,
       };
 
       axios.post('/api/users/search', body).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
@@ -81,6 +88,7 @@ export default {
 
         this.users = res.data.users;
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,
@@ -90,6 +98,7 @@ export default {
       });
     },
     updateEmployee(user) {
+      this.loading = true;
       let body = {
         user: {
           user_id: user.user_id,
@@ -104,6 +113,7 @@ export default {
       };
 
       axios.put('/api/users', body).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
@@ -111,6 +121,7 @@ export default {
         this.$store.dispatch('pushNotifications', message);
         console.log(res.data);
       }).catch((err) => {
+        this.loading = false;
         console.log(err.response.data);
         let message = {
           message: err.response.data.message,
@@ -127,6 +138,9 @@ export default {
 .search{
   padding: 20px;
   background-color:white;
+  position:relative;
+  max-height: 80vh;
+  overflow: auto;
 }
 
 .result{

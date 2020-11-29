@@ -2,6 +2,10 @@
   <div class="users page">
     <div class="container">
       <div class="register-form">
+        <div class="loading" v-if="loading">
+          <div class="circle">
+          </div>
+        </div>
         <div class="title">
           <h2>Register Employee</h2>
           <div class="line"></div>
@@ -20,12 +24,10 @@
             <input type="number" placeholder="Rate" v-model="rate">
           </div>
           <div class="form-checkbox">
-            <label>Salaried</label>
-            <input type="checkbox" v-model="salaried">
+            <input type="checkbox" v-model="salaried"> <label>Salaried Employee</label>
           </div>
           <div class="form-checkbox">
-            <label>Admin</label>
-            <input type="checkbox" v-model="is_admin">
+            <input type="checkbox" v-model="is_admin"> <label>Portal Admin</label>
           </div>
           <button>Register</button>
         </form>
@@ -54,10 +56,12 @@ export default {
       salaried: false,
       is_admin: false,
       response: '',
+      loading: false,
     };
   },
   methods: {
     register() {
+      this.loading = true;
       // create reqest body
       let body = {
         name: this.name,
@@ -69,6 +73,7 @@ export default {
       };
 
       axios.post('/api/users/register', body).then((res) => {
+        this.loading = false;
         console.log(res);
         this.response = res.data.message;
 
@@ -80,6 +85,7 @@ export default {
         this.salaried = false;
         this.is_admin = false;
       }).catch((err) => {
+        this.loading = false;
         console.log(err.response.data);
         this.response = err.response.data.message;
       });
@@ -99,6 +105,7 @@ export default {
       background-color:white;
       padding: 20px;
       box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+      position: relative;
     }
   }
 }

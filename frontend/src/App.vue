@@ -78,6 +78,7 @@ form{
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
+    position:relative;
     h3{
       margin-bottom: 10px;
     }
@@ -96,6 +97,13 @@ form{
       font-family: 'Open Sans', sans-serif;
       font-size: 16px;
     }
+
+    select{
+      border: 1px solid #ccc;
+      width:100%;
+      height: 30px;
+      font-size: 16px;
+    }
   }
 
   .form-checkbox{
@@ -109,6 +117,10 @@ form{
       height: 20px;
       width:20px;
     }
+  }
+
+  .required{
+    color:red;
   }
 
   button{
@@ -127,10 +139,43 @@ form{
       box-shadow: 0 4px 4px rgba(0,0,0,0.1);
     }
   }
+
 }
 
 .page{
   padding: 8vh 20px;
+}
+
+.loading{
+  width:100%;
+  height:100%;
+  position: absolute;
+  z-index:4;
+  top: 0;
+  left: 0;
+  background-color: rgba(200,200,200,0.5);
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  .circle{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    animation: loading 0.5s ease-in-out infinite alternate;
+    background-color:#1FBD70;
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: scale(0.8, 0.8);
+    background-color: #dfe62c;
+  }
+
+  100% {
+    transform: scale(1.3,1.3);
+    background-color:#1FBD70;
+  }
 }
 
 .title{

@@ -1,5 +1,9 @@
 <template>
   <div class="requestform">
+    <div class="loading" v-if="loading">
+      <div class="circle">
+      </div>
+    </div>
     <div class="title">
       <h2>Request Forms</h2>
       <div class="line"></div>
@@ -15,9 +19,9 @@
       </div>
     </form>
 
-    <TimeOff v-if="requestType == 'timeoff'" />
-    <Purchase v-if="requestType == 'purchase'" />
-    <Report v-if="requestType == 'report'" />
+    <TimeOff v-if="requestType == 'timeoff'" v-on:loading="loading = true" v-on:finished="loading = false" />
+    <Purchase v-if="requestType == 'purchase'" v-on:loading="loading = true" v-on:finished="loading = false" />
+    <Report v-if="requestType == 'report'" v-on:loading="loading = true" v-on:finished="loading = false"/>
   </div>
 </template>
 
@@ -36,6 +40,7 @@ export default {
   data() {
     return {
       requestType: '',
+      loading: false,
     };
   },
 };
@@ -43,6 +48,7 @@ export default {
 
 <style lang="scss" scoped>
 .requestform{
+  position:relative;
   padding: 20px;
   background-color:white;
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
