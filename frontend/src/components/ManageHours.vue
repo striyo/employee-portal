@@ -136,6 +136,7 @@ export default {
       };
       axios.post('/api/hours/update', body).then((res) => {
         this.hours = res.data.hour;
+        this.search();
       }).catch((err) => {
         let message = {
           message: err,
@@ -149,6 +150,7 @@ export default {
         hours_id: hourID,
       };
       axios.post('/api/hours/delete', body).then(() => {
+        this.search();
       }).catch((err) => {
         let message = {
           message: err,
@@ -186,6 +188,9 @@ export default {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   background-color: white;
   padding: 20px;
+  position: relative;
+  max-height: 80vh;
+  overflow: auto;
   .HoursDisplay {
     .result {
       margin-bottom: 20px;

@@ -1,6 +1,5 @@
 <template>
   <div class="timesheets page">
-    <h1>Timesheets</h1>
     <div class="grid">
       <div class="left">
         <GenerateTimesheets />
@@ -77,11 +76,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  margin-bottom: 2rem;
-  margin-left: 2rem;
-}
-
 .grid {
   width: 100%;
   display: grid;
