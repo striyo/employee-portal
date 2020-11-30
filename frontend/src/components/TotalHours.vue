@@ -25,15 +25,24 @@ export default {
     let startPeriod;
     let endPeriod;
     let total = 0;
-    if (today.getDate() < 15) {
+    if (today.getDate() < '15') {
       startPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-1`;
       endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-14`;
-      this.payPeriod = `${(today.getMonth() + 1)}/1/${today.getFullYear()} - ${(today.getMonth() + 1)}/14/${today.getFullYear()}`;
+      this.payPeriod = `${(today.getMonth() + 1)}/1/${today.getFullYear()} - ${(today.getMonth() + 1)}/15/${today.getFullYear()}`;
     } else {
+      let lastday = new Date(today.getFullYear(), (today.getMonth() + 1), 0).getDate();
       startPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-15`;
-      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-31`;
-      this.payPeriod = `${(today.getMonth() + 1)}/15/${today.getFullYear()} - ${(today.getMonth() + 1)}/31/${today.getFullYear()}`;
+      endPeriod = `${today.getFullYear()}-${(today.getMonth() + 1)}-${lastday}`;
+      this.payPeriod = `${(today.getMonth() + 1)}/14/${today.getFullYear()} - ${(today.getMonth() + 1)}/${lastday}/${today.getFullYear()}`;
     }
+    /**
+     * if today is less than 14
+     * startPeriod = 1
+     * endPeriod = today
+     * else
+     * startPeriod = 14
+     * endPeriod = today
+     */
     // post
     let body = {
       startDate: startPeriod,

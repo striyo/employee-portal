@@ -1,19 +1,19 @@
 <template>
   <form @submit.prevent="purchase">
     <div class="form-group">
-      <h3>Department</h3>
+      <h3>Department <span class="required">*</span></h3>
       <input type="text" v-model="department">
     </div>
     <div class="form-group">
-      <h3>Items, quantities, and prices</h3>
+      <h3>Items, quantities, and prices <span class="required">*</span></h3>
       <textarea v-model="items"></textarea>
     </div>
     <div class="form-group">
-      <h3>Purpose</h3>
+      <h3>Purpose <span class="required">*</span></h3>
       <textarea v-model="purpose"></textarea>
     </div>
     <div class="form-group">
-      <h3>Estimated Total Price</h3>
+      <h3>Estimated Total Price <span class="required">*</span></h3>
       <input type="number" v-model="total">
     </div>
     <button>Send</button>
@@ -43,6 +43,7 @@ export default {
       };
 
       axios.post('/api/resources/purchase', body).then((res) => {
+        this.$emit('loading');
         let message = {
           message: res.data.message,
           error: false,
@@ -54,7 +55,9 @@ export default {
         this.total = '';
 
         this.$store.dispatch('pushNotifications', message);
+        this.$emit('finished');
       }).catch((err) => {
+        this.$emit('finished');
         let message = {
           message: err.response.data.message,
           error: true,
