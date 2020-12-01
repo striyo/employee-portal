@@ -1,8 +1,7 @@
 <template>
   <div class="search">
     <div class="loading" v-if="loading">
-      <div class="circle">
-      </div>
+      <div class="circle"></div>
     </div>
     <div class="title">
       <h2>Search Employee</h2>
@@ -10,15 +9,15 @@
     </div>
     <form @submit.prevent="searchEmployee">
       <div class="form-group">
-        <input type="text" placeholder="Enter name or email" v-model="search">
+        <input type="text" placeholder="Enter name or email" v-model="search" />
       </div>
       <button>Search</button>
     </form>
     <div class="search-result">
       <div class="result" v-for="user in users" :key="`user_${user.user_id}`">
-        <h3>{{user.name}}</h3>
-        <p>{{user.email}}</p>
-        <p>{{user.phone}}</p>
+        <h3>{{ user.name }}</h3>
+        <p>{{ user.email }}</p>
+        <p>{{ user.phone }}</p>
       </div>
     </div>
   </div>
@@ -69,17 +68,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search{
+.search {
   padding: 20px;
-  background-color:white;
-  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-  position:relative;
+  background-color: white;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
   max-height: 60vh;
-  overflow:auto;
+  overflow: auto;
 }
 
-.result{
-  width:100%;
+.result {
+  width: 100%;
   border-bottom: 2px solid #f7f7f7;
   padding-bottom: 5px;
   margin-top: 10px;

@@ -41,6 +41,7 @@ app.use('/api/hours', require('./route/hours.js'));
 app.use('/api/events', require('./route/events.js'));
 app.use('/api/resources', require('./route/resources.js'));
 app.use('/api/timesheets', require('./route/timesheets.js'));
+app.use('/api/todos', require('./route/todos.js'));
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);

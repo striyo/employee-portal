@@ -1,25 +1,41 @@
 <template>
   <div class="personal page">
-    <div class="profile">
-      <div class="title">
-        <h2>Profile</h2>
-        <div class="line"></div>
+    <div class="grid">
+      <div class="left">
+        <div class="profile">
+          <div class="title">
+            <h2>Profile</h2>
+            <div class="line"></div>
+          </div>
+          <img
+            src="https://cdn3.iconfinder.com/data/icons/shipping-and-delivery-2-1/512/54-512.png"
+            alt=""
+          />
+          <p>{{ name }}</p>
+          <p>{{ email }}</p>
+          <p>{{ phone }}</p>
+          <p>${{ `${rate}${salaried == 0 ? "/hr" : " salary"}` }}</p>
+          <button class="submit-btn" @click="changepassword">
+            Change Password
+          </button>
+        </div>
       </div>
-      <img src="https://cdn3.iconfinder.com/data/icons/shipping-and-delivery-2-1/512/54-512.png" alt="">
-      <p>{{name}}</p>
-      <p>{{email}}</p>
-      <p>{{phone}}</p>
-      <p>${{`${rate}${salaried == 0 ? '/hr' : ' salary'}`}}</p>
-      <button class="submit-btn" @click="changepassword">Change Password</button>
+      <div class="right">
+        <Todos />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Todos from '../components/Todos.vue';
 
 export default {
   name: 'Personal',
+  components: {
+    Todos,
+  },
   data() {
     return {
       name: this.$store.state.user.name,
@@ -72,21 +88,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.personal{
-  display:grid;
+.grid {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 2fr 2fr;
+}
+
+.personal {
+  display: grid;
   grid-template-columns: 1fr;
 }
-.profile{
+.profile {
   padding: 20px;
-  background-color:white;
-  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  background-color: white;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 
-  img{
-    max-width:300px;
+  img {
+    max-width: 300px;
   }
 }
-@media(min-width:1024px){
-  .personal{
+@media (min-width: 1024px) {
+  .personal {
     grid-template-columns: 1fr 1fr;
   }
 }
