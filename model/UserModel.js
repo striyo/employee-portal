@@ -41,6 +41,22 @@ function getAllUser(){
   })
 }
 
+function getAllHourlyUser(){
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT * FROM users WHERE salaried = 0
+    `;
+
+    db.query(sql, (err, result) => {
+      if( err ){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  })
+}
+
 function getUser(email){
   return new Promise((resolve, reject) => {
     const sql = `
@@ -106,6 +122,22 @@ function updateUser(user){
   })
 }
 
+function updateUserPicture(user_id, picture){
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE users SET profile_picture = ? WHERE user_id = ?
+    `;
+
+    db.query(sql, [picture, user_id], (err, result) => {
+      if( err ){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  })
+}
+
 module.exports = {
   getUser,
   createUser,
@@ -113,4 +145,6 @@ module.exports = {
   updatePassword,
   searchUsers,
   updateUser,
+  getAllHourlyUser,
+  updateUserPicture,
 }

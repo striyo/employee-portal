@@ -1,7 +1,11 @@
 <template>
   <div class="timesheets page">
-    <GenerateTimesheets />
-    <ManageHours/>
+    <div class="col">
+      <GenerateTimesheets />
+    </div>
+    <div class="col">
+      <ManageHours/>
+    </div>
   </div>
 </template>
 
@@ -65,25 +69,15 @@ export default {
 
 <style lang="scss" scoped>
 .timesheets{
-  .container{
-    display:grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
 
-    .register-form{
-      background-color:white;
-      padding: 20px;
-      box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-      position: relative;
-    }
-  }
 }
 
 @media(min-width:1300px){
   .timesheets{
-    .container{
-      grid-template-columns: 1fr 1fr;
-    }
+    grid-template-columns: 1fr 1fr;
   }
 }
 

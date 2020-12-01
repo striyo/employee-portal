@@ -3,7 +3,7 @@
     <i class="fas fa-bars" id="bar-menu" @click="toggleMenu"></i>
     <div class="nav" id="nav">
       <div class="nav-profile">
-        <img src="https://cdn3.iconfinder.com/data/icons/shipping-and-delivery-2-1/512/54-512.png" alt="">
+        <img :src="`${$store.state.user.profile_picture == null ? 'https://cdn3.iconfinder.com/data/icons/shipping-and-delivery-2-1/512/54-512.png' : `/api/users/picture/${$store.state.user.profile_picture}`}`" alt="">
         <div class="text">
           <h3>{{$store.state.user.name}}</h3>
           <button id="logout-btn" @click="logout">Logout</button>
