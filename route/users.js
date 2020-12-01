@@ -1,14 +1,39 @@
 // what you need for routes
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 
 // other dependencies
 const bcrypt = require('bcrypt');
 const generator = require('generate-password');
-const { getUser, getAllUser, createUser, updatePassword, searchUsers, updateUser } = require('../model/UserModel.js');
-const { createResetToken, deleteResetToken, getResetToken } = require('../model/PwdResetModel.js');
+const {getUser, getAllUser, createUser, updatePassword, searchUsers, updateUser, updateUserPicture} = require('../model/UserModel.js');
+const {createResetToken, deleteResetToken, getResetToken} = require('../model/PwdResetModel.js');
 const template = require('../config/emailTemplate.js');
 const mail = require('../config/email.js');
+const path = require('path');
+const fs = require('fs');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './profile/');
+  },
+  filename: (req, file, cb) => {
+    const fileName =  Date.now() + file.originalname.toLowerCase().split(' ').join('-');
+    cb(null, fileName);
+  },
+});
+
+var upload = multer(
+  {
+    storage: storage,
+    fileFilter: function(_req, file, cb){
+      if( file.mimetype == 'image/png' || file.mimptype == 'image/jpg' || file.mimetype == 'image/jpeg'){
+        cb(null, true);
+      } else {
+        cb(null, false);
+      }
+    }
+  }
+);
 
 // routes
 
@@ -267,6 +292,49 @@ router.post('/search', (req, res) => {
     });
 });
 
+// update profile picture
+router.put('/picture',upload.single('picture'), (req,res) => {
+  // check if logged and has permission
+  if (req.session.user == null || req.body.user_id != req.session.user.user_id ) {
+    return res.status(403).json({
+      message: 'Unauthorized',
+    });
+  }
+
+  // check file exists
+  if( req.file == null ){
+    return res.status(422).json({
+      message: 'Please select a picture to upload',
+    });
+  }
+
+  let remove = null;
+  // delete profile picture if exist
+  if( req.session.user.profile_picture != null ){
+    remove = new Promise((resolve, reject) => {
+      fs.unlink(`./profile/${req.session.user.profile_picture}`, () => {
+        resolve();
+      });
+    });
+  }
+
+  // query db
+  remove.then(() => {
+    return updateUserPicture(req.body.user_id, req.file.filename);
+  }).then(() => {
+    req.session.user.profile_picture = req.file.filename;
+    return res.status(200).json({
+      message: 'Picture updated',
+      picture: req.file.filename,
+    });
+  }).catch((err) => {
+    console.log(err);
+    return res.status(500).json({
+      message: err,
+    });
+  });
+});
+
 router.put('/', (req, res) => {
     // check if logged and has permission
     if (req.session.user == null || req.session.user.is_admin == 0) {
@@ -287,5 +355,28 @@ router.put('/', (req, res) => {
         });
     });
 })
+
+// get user profile picture
+router.get('/picture/:file', (req, res) => {
+  // check if logged in
+  if(req.session.user == null){
+    return res.status(401).json({
+      message: "Access Denied",
+    });
+  }
+
+  let file = `./profile/${req.params.file}`;
+
+  fs.access( file, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(500).json({
+        message: err,
+      });
+    }
+
+    return res.status(200).sendFile(path.resolve(file));
+  });
+});
+
 
 module.exports = router;

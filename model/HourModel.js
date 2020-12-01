@@ -14,16 +14,14 @@ function getHours(start_date, end_date, user_id) {
     //same date?
     //edge case- endDate < startDate, endDate (less than today) 
     //query the database where user = currentUser and dates after Startdate and dates before endDate
-
-    //return each data
-    return new Promise((resolve, reject) => {
-        const sql = `select * from hours where user_id =? and date >= CAST(? AS DATE) AND date <= CAST(? AS DATE);`;
-        db.query(sql, [user_id, start_date, end_date], (err, result) => {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        })
+  //return each data
+  return new Promise((resolve, reject) => {
+    const sql = `select *, DATE_FORMAT(date, '%b %d, %Y') AS date from hours where user_id =? and date >= CAST(? AS DATE) AND date <= CAST(? AS DATE);`;
+    db.query(sql, [user_id, start_date, end_date], (err, result) => {
+      if( err ){
+        reject(err);
+      }
+      resolve(result);
     })
 }
 
