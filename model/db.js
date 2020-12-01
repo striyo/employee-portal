@@ -3,6 +3,7 @@ const db = mysql.createConnection({
   host: 'taro-tech-db-do-user-8281352-0.b.db.ondigitalocean.com',
   user: 'emerald',
   password: 'y20fx7nomdmiao2b',
+  dateStrings: true,
   port: 25060,
   database: 'portal'
 })

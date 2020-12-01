@@ -289,9 +289,15 @@ function reportTemplate(data, user) {
   `;
 }
 
-function timesheetTemplate(data, hours) {
+function timesheetTemplate(startDate, endDate, employee, hours) {
   let hoursRow = '';
   let total = 0;
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+
   for(let i = 0; i < hours.length; i++){
     let row = `
       <tr>
@@ -404,8 +410,8 @@ function timesheetTemplate(data, hours) {
     <img src="https://royalemeraldrx.com/img/mainlogo.png">  
     <div class="title">
       <h1>Timesheet</h1>
-      <h3>${data.startDate} - ${data.endDate}</h3>
-      <p>${data.employee.name}</p>
+      <h3>${(new Date(startDate)).toLocaleDateString('en-US', options)} - ${(new Date(endDate)).toLocaleDateString('en-US', options)}</h3>
+      <p>${employee.name}</p>
     </div>
     <div class="time-table">
       <table class="table">
@@ -429,8 +435,8 @@ function timesheetTemplate(data, hours) {
         </tr>
         <tr>
           <td>${total}</td>
-          <td>${data.employee.rate}</td>
-          <td>$${total * data.employee.rate}</td>
+          <td>${employee.rate}</td>
+          <td>$${total * employee.rate}</td>
         </tr>
       </table>
     </div>

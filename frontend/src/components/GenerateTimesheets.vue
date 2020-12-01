@@ -1,5 +1,9 @@
 <template>
   <div class="generatetime">
+    <div class="loading" v-if="loading">
+      <div class="circle">
+      </div>
+    </div>
     <div class="title">
       <h2>Generate Timesheets</h2>
       <div class="line"></div>
@@ -9,15 +13,27 @@
         <input type="checkbox" v-model="all"> <label>Generate for all users</label>
       </div>
       <div class="form-group" v-if="all == false">
-        <input type="text" v-model="showEmployee" placeholder="Employee">
-        <div class="auto-complete">
-          <p v-for="user in users " :key="`auto_${user.user_id}`" @click="selectUser(user)">{{user.name}} -- {{user.email}}</p>
+        <h3>Select Employee</h3>
+        <div class="selection" v-if="employees.length != 0">
+          <p style="margin-bottom: 5px; color:darkgreen;">Click to remove a selection</p>
+          <label v-for="employee in employees" :key="`employee_${employee.user_id}`" @click="removeSelection(employee)">{{employee.name}}</label>
+        </div>
+        <div class="no-selection" v-else>
+          <label>No employees selected</label>
+        </div>
+        <div style="position:relative; width:100%">
+          <input type="text" v-model="showEmployee" placeholder="Enter an employee's name or email and click on the desired person">
+          <div class="auto-complete">
+            <p v-for="user in users " :key="`auto_${user.user_id}`" @click="selectUser(user)">{{user.name}} -- {{user.email}}</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
-        <input type="date" placeholder="Start Date" v-model="startDate">
+        <h3>Start Date</h3>
+        <input type="date" v-model="startDate">
       </div>
       <div class="form-group">
+        <h3>End Date</h3>
         <input type="date" placeholder="End Date" v-model="endDate">
       </div>
       <button>Generate</button>
@@ -34,12 +50,13 @@ export default {
     return {
       all: false,
       showEmployee: '',
-      employee: null,
+      employees: [],
       startDate: null,
       endDate: null,
       timeout: null,
       clicked: false,
       users: [],
+      loading: false,
     };
   },
   watch: {
@@ -65,7 +82,7 @@ export default {
           }).catch((err) => {
             console.log(err.response.data);
           });
-        }, 1000);
+        }, 500);
       } else {
         this.users = [];
       }
@@ -73,23 +90,49 @@ export default {
   },
   methods: {
     selectUser(user) {
-      this.employee = user;
-      this.showEmployee = user.name;
+      this.employees.push(user);
+      this.showEmployee = '';
       this.users = [];
       this.click = true;
     },
+    removeSelection(user) {
+      this.employees = this.employees.filter((employee) => employee.user_id !== user.user_id);
+    },
     generate() {
+      this.loading = true;
       let body = {
         all: this.all,
-        employee: this.employee,
+        employees: this.employees,
         startDate: this.startDate,
         endDate: this.endDate,
       };
       console.log(body);
-      axios.post('/api/timesheets', body).then((res) => {
-        console.log(res.data);
+      let route = '/api/timesheets';
+      if (this.all) {
+        route = '/api/timesheets/all';
+      }
+
+      axios.post(route, body).then((res) => {
+        this.loading = false;
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        this.startDate = null;
+        this.endDate = null;
+        this.employees = [];
+        this.showEmployee = '';
       }).catch((err) => {
+        this.loading = false;
         console.log(err.response.data);
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
       });
     },
   },
@@ -101,6 +144,27 @@ export default {
   padding: 20px;
   background-color:white;
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.selection{
+  margin-bottom: 10px;
+  label{
+    background-color:#f7f7f7;
+    padding: 5px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+    margin-right: 5px;
+    display:inline-block;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+}
+.no-selection{
+  margin-bottom: 10px;
+  label{
+    background-color:#f7f7f7;
+    padding: 5px;
+  }
 }
 
 .auto-complete{
