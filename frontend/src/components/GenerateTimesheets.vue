@@ -10,7 +10,8 @@
     </div>
     <form @submit.prevent="generate">
       <div class="form-checkbox">
-        <input type="checkbox" v-model="all"> <label>Generate for all users</label>
+        <input type="checkbox" v-model="all" />
+        <label>Generate for all users</label>
       </div>
       <div class="form-group" v-if="all == false">
         <h3>Select Employee</h3>
@@ -140,8 +141,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.generatetime{
+.generatetime {
   padding: 20px;
+  margin-bottom: 20px;
   background-color:white;
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   position: relative;
@@ -165,20 +167,21 @@ export default {
     background-color:#f7f7f7;
     padding: 5px;
   }
+
 }
 
-.auto-complete{
-  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-  width:100%;
-  position:absolute;
-  top:30px;
-  z-index:2;
-  background-color:white;
-  p{
+.auto-complete {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  position: absolute;
+  top: 30px;
+  z-index: 2;
+  background-color: white;
+  p {
     padding: 5px 10px;
     cursor: pointer;
-    &:hover{
-      background-color:#f6f6f6;
+    &:hover {
+      background-color: #f6f6f6;
     }
   }
 }

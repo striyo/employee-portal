@@ -1,10 +1,5 @@
 <template>
   <div class="personal page">
-    <div class="profile">
-      <div class="title">
-        <h2>Profile</h2>
-        <div class="line"></div>
-      </div>
       <div class="profile-main">
         <div class="profile-picture" @click="edit = !edit">
           <img :src="`${$store.state.user.profile_picture == null ? 'https://cdn3.iconfinder.com/data/icons/shipping-and-delivery-2-1/512/54-512.png' : `/api/users/picture/${$store.state.user.profile_picture}`}`" alt="">
@@ -24,15 +19,20 @@
           <button class="submit-btn" @click="changepassword" style="margin-top: 20px;">Change Password</button>
         </div>
       </div>
+      <Todos />
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Todos from '../components/Todos.vue';
 
 export default {
   name: 'Personal',
+  components: {
+    Todos,
+  },
   data() {
     return {
       name: this.$store.state.user.name,
@@ -115,15 +115,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.personal{
-  display:grid;
+.grid {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 2fr 2fr;
+}
+
+.personal {
+  display: grid;
   grid-template-columns: 1fr;
 }
-.profile{
+.profile {
   padding: 20px;
-  background-color:white;
-  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-
+  background-color: white;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  
   .profile-main{
     display:grid;
     grid-template-columns: 1fr;
@@ -152,10 +159,11 @@ export default {
       padding: 2px;
       transition: all 0.3s ease;
     }
+
   }
 }
-@media(min-width:1024px){
-  .personal{
+@media (min-width: 1024px) {
+  .personal {
     grid-template-columns: 1fr 1fr;
   }
 

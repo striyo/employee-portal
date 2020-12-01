@@ -1,16 +1,16 @@
 <template>
-<div class="hours page">
-  <div class="grid">
-    <div class="left">
-      <TotalHours />
-      <LogHours />
-    </div>
-    <div class="right">
-      <ViewTimesheets />
-      <ViewHours />
+  <div class="hours page">
+    <div class="grid">
+      <div class="left">
+        <TotalHours />
+        <LogHours />
+      </div>
+      <div class="right">
+        <ViewTimesheets />
+        <ViewHours />
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -30,22 +30,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-h1{
+h1 {
   margin-bottom: 2rem;
-  margin-left:2rem;
+  margin-left: 2rem;
 }
 
-.grid{
-  width:100%;
-  display:grid;
+.grid {
+  width: 100%;
+  display: grid;
   gap: 20px;
-  grid-template-columns:1fr;
+  grid-template-columns: 1fr;
 }
 
-@media(min-width: 1024px) {
+@media (min-width: 1024px) {
   .grid {
-    grid-template-columns:1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>

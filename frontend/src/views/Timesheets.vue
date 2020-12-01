@@ -1,10 +1,13 @@
 <template>
   <div class="timesheets page">
-    <div class="col">
-      <GenerateTimesheets />
-    </div>
-    <div class="col">
-      <ManageHours/>
+    <div class="grid">
+      <div class="left">
+        <GenerateTimesheets />
+        <CreateHours />
+      </div>
+      <div class="right">
+        <ManageHours />
+      </div>
     </div>
   </div>
 </template>
@@ -13,15 +16,20 @@
 import axios from 'axios';
 import GenerateTimesheets from '@/components/GenerateTimesheets.vue';
 import ManageHours from '@/components/ManageHours.vue';
+import CreateHours from '@/components/CreateHours.vue';
 
 export default {
   name: 'Timesheets',
   components: {
     GenerateTimesheets,
     ManageHours,
+    CreateHours,
   },
   data() {
     return {
+      search: '',
+      startDate: '',
+      endDate: '',
       name: '',
       email: '',
       phone: null,
@@ -68,17 +76,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.timesheets{
-  display:grid;
-  grid-template-columns: 1fr;
+.grid {
+  width: 100%;
+  display: grid;
   gap: 20px;
-
+  grid-template-columns: 1fr 1fr;
 }
 
-@media(min-width:1300px){
-  .timesheets{
+@media (min-width: 1024px) {
+  .grid {
     grid-template-columns: 1fr 1fr;
   }
 }
-
 </style>
