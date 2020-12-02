@@ -23,6 +23,7 @@ function getHours(start_date, end_date, user_id) {
       }
       resolve(result);
     })
+  });
 }
 
 /**
@@ -48,8 +49,7 @@ function updateHours(timein, mealout, mealin, timeout, total, user_id, date) {
             }
             resolve(result);
         })
-    })
-
+    });
 }
 
 /**

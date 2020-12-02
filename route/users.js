@@ -309,12 +309,17 @@ router.put('/picture',upload.single('picture'), (req,res) => {
   }
 
   let remove = null;
+
   // delete profile picture if exist
   if( req.session.user.profile_picture != null ){
     remove = new Promise((resolve, reject) => {
       fs.unlink(`./profile/${req.session.user.profile_picture}`, () => {
         resolve();
       });
+    });
+  } else {
+    remove = new Promise((resolve) => {
+      resolve();
     });
   }
 
