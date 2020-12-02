@@ -18,7 +18,7 @@
         <button class="delete-btn" @click="deleteEvent(event)">Delete</button>
     </div>
     <div v-if="edit==true">
-      <EditEvents v-bind:event="this.event" v-on:close-edit="edit=false"/>
+      <EditEvents v-bind:event="this.event" v-on:close-edit="closeEdit"/>
   </div>
   </div>
 </div>
@@ -97,9 +97,13 @@ export default {
         console.log(err.response.data.message);
       });
     },
-    // view() {
-    //   console.log(this.event);
-    // },
+  // closeEdit() {
+  // edit= false;
+  // want to rerender
+  // },
+  // view() {
+  //   console.log(this.event);
+  // },
   },
 };
 </script>
