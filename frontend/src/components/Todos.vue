@@ -33,6 +33,20 @@
       </div>
       <button>Create</button>
     </form>
+    <div class="todo-switch" style="display:flex; justify-content:center;
+    align-items:center; margin-top: 20px; margin-bottom: 20px;">
+      <label style="cursor: pointer" :class="{'greyed': type == 1}" @click="type=0">Incomplete</label> | <label
+     style="cursor:pointer" :class="{'greyed': type == 0}" @click="type=1">Complete</label>
+    </div>
+    <button v-if="type == 1" class="delete-btn"  style="display: block; margin: auto;margin-top: 20px; margin-bottom: 20px;" @click="deleteTodos()">Delete All</button>
+    <form>
+      <div class="form-checkbox" v-for="todo in todos"
+      :key="`todo_${todo.todos_receiver_id}`">
+        <template> {{todo.complete = Boolean(todo.complete)}} </template>
+        <input type="checkbox" @change="updateTodo(todo)"
+        v-model="todo.complete"> <label>{{todo.item}}</label>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -47,8 +61,13 @@ export default {
       description: null,
       users: [],
       peopleArr: [],
+      todos: [],
       click: false,
+      type: 0,
     };
+  },
+  created() {
+    this.getTodos(0);
   },
   watch: {
     people(val) {
@@ -78,6 +97,9 @@ export default {
         this.users = [];
       }
     },
+    type(val) {
+      this.getTodos(val);
+    },
   },
   methods: {
     selectUser(user) {
@@ -85,26 +107,26 @@ export default {
       this.people = '';
       this.users = [];
       this.click = true;
+      this.type = 0;
     },
     removeSelection(user) {
       this.peopleArr = this.peopleArr.filter((person) => person.user_id !== user.user_id);
     },
     submit() {
-      let peopleList = this.people.split(',');
-      for (let i = 0; i < peopleList.length; i += 1) {
-        peopleList[i] = peopleList[i].trim();
-      }
       let body = {
-        people: peopleList,
+        peopleArr: this.peopleArr,
         description: this.description,
       };
-      axios.post('/api/todos/add', body).then((res) => {
+      axios.post('/api/todos/', body).then((res) => {
         let message = {
           message: res.data.message,
           error: false,
         };
 
         this.$store.dispatch('pushNotifications', message);
+        this.getTodos(this.type);
+        this.description = '';
+        this.peopleArr = [];
         console.log(res.data.message);
       }).catch((err) => {
         let message = {
@@ -114,6 +136,56 @@ export default {
 
         this.$store.dispatch('pushNotifications', message);
         console.log(err.response.data.message);
+      });
+    },
+    getTodos(type) {
+      axios.get(`/api/todos/${type}`).then((res) => {
+        this.todos = res.data.todos;
+      }).catch((err) => {
+        console.log(err.response.data);
+      });
+    },
+    updateTodo(todo) {
+      let body = {
+        todos_receiver_id: todo.todos_receiver_id,
+        completed: todo.complete,
+      };
+
+      axios.put('/api/todos/', body).then((res) => {
+        this.getTodos(this.type);
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+      }).catch((err) => {
+        let message = {
+          message: err.response.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(err.response.data);
+      });
+    },
+    deleteTodos() {
+      axios.delete('/api/todos/').then((res) => {
+        this.getTodos(this.type);
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+      }).catch((err) => {
+        let message = {
+          message: err.response.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
+        console.log(err.response.data);
       });
     },
   },
@@ -148,6 +220,13 @@ export default {
 
 }
 
+.greyed{
+  color: #ccc;
+  &:hover{
+    color:#999;
+  }
+}
+
 .auto-complete {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -162,5 +241,21 @@ export default {
       background-color: #f6f6f6;
     }
   }
+}
+
+.delete-btn {
+  padding: 10px 10px;
+  font-size: 15px;
+  border: none;
+  background-color: #bd241f;
+  color: white;
+  transition: all 0.1s ease;
+  cursor: pointer;
+  font-weight: 700;
+  &:hover {
+    transform: scale(1.1, 1.1);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  }
+  margin-right: 20px;
 }
 </style>

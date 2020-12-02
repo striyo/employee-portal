@@ -10,9 +10,27 @@ const db = require('./db.js');
  * @param send_id
  * @param description
  */
+function getTodos(receiver_id, completed) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT x.*, y.item FROM todos_receiver x, todos y WHERE x.todos_id = y.todos_id AND x.receiver_id = ? AND x.complete = ?`;
+        db.query(sql, [receiver_id, completed], (err, result) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        })
+    });
+}
+
+/**
+ * CreateHours
+ * 
+ * @param send_id
+ * @param description
+ */
 function createTodo(send_id, description) {
     return new Promise((resolve, reject) => {
-        const sql = `INSERT INTO todos (send_id, item) VALUES ?, ?;`;
+        const sql = `INSERT INTO todos (send_id, item) VALUES (?, ?);`;
         db.query(sql, [send_id, description], (err, result) => {
             if (err) {
                 reject(err);
@@ -29,10 +47,10 @@ function createTodo(send_id, description) {
  * @param description
  * @param receiver_id
  */
-function createTodoReceiver(send_id, description, receiver_id) {
+function createTodoReceiver(todos_id, receiver_id) {
     return new Promise((resolve, reject) => {
-        const sql = `INSERT INTO todos_receiver (todos_id, receiver_id, complete) SELECT x.todos_id, ?, 0 FROM todos x WHERE x.send_id = ? AND x.item = ?;`;
-        db.query(sql, [receiver_id, send_id, description, receiver_id], (err, result) => {
+        const sql = `INSERT INTO todos_receiver (todos_id, receiver_id, complete) VALUES (?, ?, 0);`;
+        db.query(sql, [todos_id, receiver_id], (err, result) => {
             if (err) {
                 reject(err);
             }
@@ -41,9 +59,49 @@ function createTodoReceiver(send_id, description, receiver_id) {
     });
 }
 
+/**
+ * CreateHours
+ * 
+ * @param todos_receiver_id
+ * @param completed
+ */
+function updateTodo(todos_receiver_id, completed) {
+    return new Promise((resolve, reject) => {
+        const sql = `
+        UPDATE todos_receiver SET complete = ? WHERE todos_receiver_id = ?
+        `;
+        db.query(sql, [completed, todos_receiver_id], (err, result) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        })
+    });
+}
+
+/**
+ * Delete Todos 
+ * 
+ * @param receiver_id
+ */
+function deleteTodos(receiver_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM todos_receiver WHERE receiver_id = ? AND complete = 1;`;
+    db.query(sql, [receiver_id], (err, result) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(result);
+    })
+  });
+}
+
 
 
 module.exports = {
+    getTodos,
     createTodo,
     createTodoReceiver,
+    updateTodo,
+    deleteTodos,
 }
