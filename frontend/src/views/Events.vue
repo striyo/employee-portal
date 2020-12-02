@@ -45,4 +45,10 @@ export default {
   gap: 20px;
   grid-template-columns:1fr 1fr;
 }
+
+@media(max-width: 1024px) {
+  .grid {
+    grid-template-columns:1fr;
+  }
+}
 </style>

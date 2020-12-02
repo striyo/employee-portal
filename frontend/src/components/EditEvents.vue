@@ -26,11 +26,11 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <input type="text" v-model="bodyParagraph" placeholder="Description">
+            <textarea type="text" v-model="bodyParagraph" placeholder="Description"> </textarea>
           </div>
         </div>
         <div class="form-row">
-          <button class="cancel-btn" @click="$emit('close-edit')">Cancel</button>
+          <button class="close-btn" @click="$emit('close-edit')">Close</button>
           <button class="edit-btn" type="submit" >Save</button>
         </div>
       </form>
@@ -115,12 +115,12 @@ position:fixed;
   padding: 20px;
   font-size: 15px;
   background-color:white;
-  margin-top: 10%;
+  margin-top: 5%;
   margin-left: 30%;
   width: 50%;
 }
 
-.cancel-btn{
+.close-btn{
   padding: 10px 20px;
   font-size: 20px;
   border:none;
@@ -148,6 +148,12 @@ position:fixed;
   &:hover{
     transform: scale(1.1, 1.1);
     box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  }
+}
+
+@media(max-width: 375px) {
+  .edit-btn {
+    padding: 10px 28px;
   }
 }
 </style>

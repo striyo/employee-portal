@@ -24,9 +24,15 @@ router.post('/add', (req, res) => {
 //send the post request
 router.post('/search', (req, res) => {
   getEvent(req.body.title, req.body.startDate, req.body.endDate).then((events)=>{
+    let response = events;
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < events.length; i++) {
+      response[i].start_date = new Date(events[i].start_date);
+    }
+    const SortedEvents = response.sort((b, a) => b.start_date - a.start_date);
     return res.status(200).json({
       message: 'Events found',
-      events:events,
+      events:SortedEvents,
     });
   }).catch((err)=>{
     console.log(err);

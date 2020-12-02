@@ -14,7 +14,7 @@ const db = require('./db.js');
    */
   function createEvent( start_date, end_date, start_time, end_time, title, body){
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO events (start_date, end_date, start_time, end_time, title, body) VALUES (?, ?, ?, ?, ?, ?);`;
+      const sql = `INSERT INTO events (start_date, end_date, start_time, end_time, title, body) VALUES (?, ?, ?, ?, ?, ?)`;
       db.query(sql, [start_date, end_date, start_time, end_time, title, body], (err, result) => {
         if( err ){
           reject(err);
@@ -37,7 +37,7 @@ function getEvent(title, start_date, end_date){
     start_date = (start_date == null) ? "0000-01-01": start_date;  //beginning of time by default
     end_date = (end_date == null) ? "3000-01-01": end_date;  //beginning of time by default
     if(title){
-      //query using the  name & dates
+      //query using the  name & dates insert
       const sql = `select * from events where title =? and start_date >= CAST(? AS DATE) AND end_date <= CAST(? AS DATE);`;
       db.query(sql, [title, start_date, end_date], (err, result) => {
         if( err ){

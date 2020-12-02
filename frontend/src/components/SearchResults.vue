@@ -11,7 +11,7 @@
   >
     <div class="left">
       <p>{{setDate(event.start_date)}}   @{{setTime(event.start_time)}}</p>
-      <h2>{{event.title}}</h2>
+      <h3>{{event.title}}</h3>
     </div>
     <div class="right">
         <button class="edit-btn" @click="setEvent(event), edit=true">Edit</button>
@@ -19,7 +19,7 @@
     </div>
     <div v-if="edit==true">
       <EditEvents v-bind:event="this.event" v-on:close-edit="edit=false"/>
-  </div>
+    </div>
   </div>
 </div>
 <!-- </div> -->
@@ -57,6 +57,9 @@ export default {
       if (hour < 12) {
         return (hour.toString()).concat(':').concat(minute.toString()).concat(' AM');
       }
+      if (hour === '24' || hour === '12') {
+        return ('12'.concat(':')).concat(minute.toString()).concat(' PM');
+      }
       hour %= 12;
       return (hour.toString()).concat(':').concat(minute.toString()).concat(' PM');
     },
@@ -74,7 +77,6 @@ export default {
       this.event = param;
     },
     deleteEvent(event) {
-      console.log(`What is this ${event}`);
       let body = {
         event_id: event.event_id,
       };
@@ -114,6 +116,7 @@ export default {
   width:100%;
   display:grid;
   gap: 20px;
+  margin: 15px 0px;
   //grid-row:1/span 2;
   grid-template-columns:1fr 1fr;
 }
@@ -147,7 +150,6 @@ export default {
   }
   margin-right: 20px;
 }
-
 button{
   background: none;
   border: none;

@@ -24,6 +24,7 @@ export default {
     };
   },
   created() {
+    console.log(this.$store.state.user.user_id);
     axios.get(`/api/timesheets/${this.$store.state.user.user_id}`).then((res) => {
       this.files = res.data.files;
     }).catch((err) => {

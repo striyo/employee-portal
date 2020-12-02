@@ -92,7 +92,6 @@ router.post('/update', (req, res) => {
 router.post('/search', (req, res) => {
   //admit - if admin specify email req.session.user.is_admin
   //for pleabs
-  // console.log(req.session.user.user_id);
   getHours(req.body.startDate, req.body.endDate, req.session.user.user_id).then((hour) =>{
     return res.status(200).json({
       message: "Hours found",
