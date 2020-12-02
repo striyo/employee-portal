@@ -1,29 +1,33 @@
 <template>
-<div class="LogHours">
-  <div class="title">
-    <h2>Log Hours</h2>
-    <div class="line"></div>
+  <div class="LogHours">
+    <div class="title">
+      <h2>Log Hours</h2>
+      <div class="line"></div>
+    </div>
+    <form @submit.prevent="submit">
+      <div class="form-row">
+        <div class="form-group">
+          <h3>Time In:</h3>
+          <input type="time" v-model="timein" />
+        </div>
+        <div class="form-group">
+          <h3>Meal In:</h3>
+          <input type="time" v-model="mealin" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <h3>Meal Out:</h3>
+          <input type="time" v-model="mealout" />
+        </div>
+        <div class="form-group">
+          <h3>Time Out:</h3>
+          <input type="time" v-model="timeout" />
+        </div>
+      </div>
+      <button>Save</button>
+    </form>
   </div>
-  <form @submit.prevent="submit">
-    <div class="form-row">
-      <div class="form-group">
-        <h3>Time In: </h3><input type="time" v-model="timein">
-      </div>
-      <div class="form-group">
-        <h3>Meal In: </h3><input type="time" v-model="mealin">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <h3>Meal Out: </h3><input type="time" v-model="mealout">
-      </div>
-      <div class="form-group">
-        <h3>Time Out: </h3><input type="time" v-model="timeout">
-      </div>
-    </div>
-    <button>Save</button>
-  </form>
-</div>
 </template>
 
 <script>
@@ -86,24 +90,25 @@ export default {
 
         this.$store.dispatch('pushNotifications', message);
         console.log(res.data.message);
-      }).catch((err) => {
-        let message = {
-          message: err.response.data.message,
-          error: true,
-        };
+      })
+        .catch((err) => {
+          let message = {
+            message: err.response.data.message,
+            error: true,
+          };
 
-        this.$store.dispatch('pushNotifications', message);
-        console.log(err.response.data.message);
-      });
+          this.$store.dispatch('pushNotifications', message);
+          console.log(err.response.data.message);
+        });
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.LogHours{
-  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+.LogHours {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  background-color:white;
+  background-color: white;
 }
 </style>

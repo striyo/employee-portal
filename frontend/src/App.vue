@@ -117,6 +117,10 @@ form{
       height: 20px;
       width:20px;
     }
+
+    label{
+      font-size: 18px;
+    }
   }
 
   .required{

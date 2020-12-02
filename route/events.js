@@ -60,8 +60,6 @@ router.post('/delete', (req, res) => {
 //delete event
 //send the post request
 router.post('/update', (req, res) => {
-  console.log("update post is hit");
-  console.log('event id : ' + req.body.id);
   let startDate = new Date(req.body.startDate);
   let endDate = new Date(req.body.endDate);
   updateEvent(req.body.id, startDate,endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.bodyParagraph).then(()=>{
