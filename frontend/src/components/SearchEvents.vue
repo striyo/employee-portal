@@ -15,7 +15,7 @@
         <h3>Start Date: </h3><input type="date" v-model="startDate">
       </div>
       <div class="form-group">
-        <h3>End Date: </h3><input type="date" v-model="endDate">
+        <h3>End Date: </h3><input type="date" v-model="endDate" >
       </div>
     </div>
     <button @click="$emit('search', events)">Submit</button>

@@ -202,4 +202,13 @@ export default {
     display:none;
   }
 }
+
+@media(min-width: 1024px){
+  .nav .nav-items a{
+    height: 10%;
+    font-size: 1.2rem;
+    //margin-left: 10%;
+    //width: 90%;
+  }
+}
 </style>

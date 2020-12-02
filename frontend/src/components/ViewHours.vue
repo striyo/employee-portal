@@ -22,28 +22,28 @@
       v-for="hour in hours"
       :key="`hour_${hour.hour_id}`"
     >
-      <div class="result">
-        <h3>Date : {{ hour.date }}</h3>
-        <div class="row">
-          <div class="time-slots">
-            <p>Time In</p>
-            <p>{{ hour.clock_in }}</p>
-          </div>
-          <div class="time-slots">
-            <p>Meal In</p>
-            <p>{{ hour.meal_in }}</p>
-          </div>
-          <div class="time-slots">
-            <p>Meal Out</p>
-            <p>{{ hour.meal_out }}</p>
-          </div>
-          <div class="time-slots">
-            <p>Time Out</p>
-            <p>{{ hour.clock_out }}</p>
-          </div>
-          <div class="time-slots">
-            <p>Total</p>
-            <p>{{ hour.total }}</p>
+ <div class="result">
+      <h3>{{setDate(hour.date)}}</h3>
+      <div class="row">
+        <div class="time-slots">
+          <p>Time In</p>
+          <p>{{setTime(hour.clock_in)}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal In</p>
+          <p>{{setTime(hour.meal_in)}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Meal Out</p>
+          <p>{{setTime(hour.meal_out)}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Time Out</p>
+          <p>{{setTime(hour.clock_out)}}</p>
+        </div>
+        <div class="time-slots">
+          <p>Total</p>
+          <p>{{hour.total}}</p>
           </div>
         </div>
       </div>
@@ -80,6 +80,29 @@ export default {
         this.$store.dispatch('pushNotifications', message);
       });
     },
+    setDate(paramDate) {
+      let theDay = new Date(paramDate);
+      let weekday = (theDay.toString().split(' ')[0]);
+      let month = (theDay.toString().split(' ')[1]);
+      let date = (theDay.toString().split(' ')[2]);
+      let year = (theDay.toString().split(' ')[3]);
+      return weekday.concat(', ').concat(date).concat(' ').concat(month)
+        .concat(' ')
+        .concat(year);
+    },
+    setTime(time) {
+      let theTime = (time.split(':'));
+      let hour = theTime[0];
+      let minute = theTime[1];
+      if (hour < 12) {
+        return (hour.toString()).concat(':').concat(minute.toString()).concat(' AM');
+      }
+      if (hour === '24' || hour === '12') {
+        return ('12'.concat(':')).concat(minute.toString()).concat(' PM');
+      }
+      hour %= 12;
+      return (hour.toString()).concat(':').concat(minute.toString()).concat(' PM');
+    },
   },
 };
 </script>
@@ -103,4 +126,5 @@ export default {
     }
   }
 }
+
 </style>
