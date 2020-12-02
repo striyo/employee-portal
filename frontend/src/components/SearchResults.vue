@@ -155,4 +155,10 @@ button{
   border: none;
   text-align: start;
 }
+
+@media(max-width: 1200px) {
+  .edit-btn{
+    padding: 10px 28px;
+  }
+}
 </style>

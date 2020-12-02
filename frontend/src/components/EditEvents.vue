@@ -156,4 +156,11 @@ position:fixed;
     padding: 10px 28px;
   }
 }
+
+@media(max-width: 1200px) {
+  .edit{
+    margin-left: 0px;
+    width: 100%;
+  }
+}
 </style>

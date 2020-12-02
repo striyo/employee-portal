@@ -10,7 +10,7 @@
           <input type="text" placeholder="Name" required v-model="searchID">
         </div>
       </div>
-      <div class="form-row">
+      <div class="form-row dates">
         <div class="form-group">
           <h3>Start Date</h3><input type="date" v-model="startDate">
         </div>
@@ -193,5 +193,12 @@ export default {
     box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   }
   margin-right: 20px;
+}
+
+@media(max-width: 414px) {
+  .dates {
+    display: grid;
+    grid-template-columns:1fr;
+  }
 }
 </style>
