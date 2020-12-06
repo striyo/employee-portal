@@ -1,36 +1,16 @@
 <template>
   <div class="ViewEvent">
     <div class="view">
-      <div>
-        <div class="form-row">
-          <div class="form-group">
-            <h1>{{title}}</h1>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <h3>Start Date: {{setDate(startDate)}}</h3>
-          </div>
-          <div class="form-group">
-            <h3>End Date: {{setDate(endDate)}}</h3>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <h3>Start Time: {{setTime(startTime)}} </h3>
-          </div>
-          <div class="form-group">
-            <h3>End Time: {{setTime(endTime)}} </h3>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <p><strong>About:</strong> {{bodyParagraph}}</p>
-          </div>
-        </div>
-        <div class="form-row">
-          <button class="close-btn" @click="$emit('close-view')">Close</button>
-        </div>
+      <p style="font-size: 20px; float:right; cursor: pointer" @click="$emit('close-view')">X</p>
+      <div class="title">
+          <h2>{{title}}</h2>
+          <div class="line"></div>
+      </div>
+      <div class="dates">
+        <p style="color:#777">{{event.formatted_start_date}}{{`${event.formatted_start_date == event.formatted_end_date ? ` @${event.formatted_start_time} - ${event.formatted_end_time}` : ` @${event.formatted_start_time} - ${event.formatted_end_date} ${event.formatted_end_time}`}`}}</p>
+      </div>
+      <div class="info">
+        <p style="white-space: pre-wrap;">{{bodyParagraph}}</p>
       </div>
     </div>
   </div>
@@ -48,6 +28,10 @@ export default {
       endDate: this.event.end_date,
       startTime: this.event.start_time,
       endTime: this.event.end_time,
+      formatted_start_date: this.event.formatted_start_date,
+      formatted_end_date: this.event.formatted_end_date,
+      formatted_start_time: this.event.formatted_start_time,
+      formatted_end_time: this.event.formatted_end_time,
       bodyParagraph: this.event.body,
     };
   },
@@ -83,39 +67,25 @@ export default {
 <style lang="scss" scoped>
 .ViewEvent{
   position:fixed;
-  padding:0;
-  margin:0;
-
   top:0;
   left:0;
-
+  z-index: 2;
   width: 100%;
-  height: 100%;
-  background:rgba(255,255,255,0.8);
+  height: 100vh;
+  max-height: 100vh;
+  overflow: auto;
+  background:rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .view{
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   padding: 20px;
-  font-size: 15px;
+  font-size: 16px;
   background-color:white;
-  margin-top: 5%;
-  margin-left: 30%;
-  width: 60%;
-  h1{
-    font-size: 2rem;
-  }
-  p{
-    margin: 1rem 0rem;
-    //font-size: 2rem;
-  }
-}
-
-@media(max-width: 1024px) {
-  .view {
-    width: 80%;
-    margin-left:10% ;
-    text-align: center;
-  }
+  width:90%;
+  max-width: 800px;
 }
 
 .close-btn{

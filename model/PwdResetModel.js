@@ -32,6 +32,22 @@ function getResetToken(user_id) {
   });
 }
 
+function checkResetToken(user_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT * FROM pwdReset WHERE user_id = ?
+    `;
+
+    db.query(sql, [user_id], (err, result) => {
+      if(err){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  });
+}
+
 function deleteResetToken(reset_id) {
   return new Promise((resolve, reject) => {
     const sql = `
@@ -48,8 +64,27 @@ function deleteResetToken(reset_id) {
   });
 }
 
+
+function deleteResetTokenByUserId(user_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      DELETE FROM pwdReset WHERE user_id = ?
+    `;
+
+    db.query(sql, [user_id], (err, result) => {
+      if(err){
+        reject(err);
+      }
+
+      resolve(result);
+    })
+  });
+}
+
 module.exports = {
   createResetToken,
   getResetToken,
-  deleteResetToken
+  deleteResetToken,
+  deleteResetTokenByUserId,
+  checkResetToken,
 };

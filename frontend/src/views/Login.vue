@@ -28,6 +28,11 @@ export default {
       password: '',
     };
   },
+  created() {
+    if (this.$store.state.user !== null) {
+      this.$router.push('/dashboard');
+    }
+  },
   methods: {
     login() {
       // create request body

@@ -7,13 +7,30 @@ const db = require('./db.js');
 /**
  * CreateHours
  * 
- * @param send_id
- * @param description
+ * @param receiver_id
+ * @param completed
  */
 function getTodos(receiver_id, completed) {
     return new Promise((resolve, reject) => {
         const sql = `SELECT x.*, y.item FROM todos_receiver x, todos y WHERE x.todos_id = y.todos_id AND x.receiver_id = ? AND x.complete = ?`;
         db.query(sql, [receiver_id, completed], (err, result) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        })
+    });
+}
+
+/**
+ * CreateHours
+ * 
+ * @param receiver_id
+ */
+function getAllTodos(receiver_id) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT x.*, y.item FROM todos_receiver x, todos y WHERE x.todos_id = y.todos_id AND x.receiver_id = ?`;
+        db.query(sql, [receiver_id], (err, result) => {
             if (err) {
                 reject(err);
             }
@@ -84,12 +101,29 @@ function updateTodo(todos_receiver_id, completed) {
  * 
  * @param receiver_id
  */
-function deleteTodos(receiver_id) {
+function deleteTodoReceiver(receiver_id) {
   return new Promise((resolve, reject) => {
     const sql = `DELETE FROM todos_receiver WHERE receiver_id = ? AND complete = 1;`;
     db.query(sql, [receiver_id], (err, result) => {
       if (err) {
         reject(err);
+      }
+      resolve(result);
+    })
+  });
+}
+
+/**
+ * Delete Todos 
+ * 
+ * @param todo_id
+ */
+function deleteTodo() {
+  return new Promise((resolve, reject) => {
+    const sql = `SET SQL_SAFE_UPDATES = 0; DELETE FROM todos x WHERE NOT EXISTS (SELECT * FROM todos_receiver y WHERE x.todos_id = y.todos_id); SET SQL_SAFE_UPDATES = 1;`;
+    db.query(sql, (err, result) => {
+      if (err) {
+          reject(err);
       }
       resolve(result);
     })
@@ -103,5 +137,7 @@ module.exports = {
     createTodo,
     createTodoReceiver,
     updateTodo,
-    deleteTodos,
+    deleteTodoReceiver,
+    getAllTodos,
+    deleteTodo,
 }

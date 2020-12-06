@@ -1,19 +1,20 @@
 <template>
   <div class="events page">
-    <h1>Events</h1>
     <div class="grid">
       <div class="left">
           <AddEvents />
           <SearchEvents @results='display' />
       </div>
       <div class="right">
-        <SearchResults :resultArr='resultsArr' />
+        <SearchResults :events='events' v-on:event-deleted="deleteEvent" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 import AddEvents from '../components/AddEvents.vue';
 import SearchEvents from '../components/SearchEvents.vue';
 import SearchResults from '../components/SearchResults.vue';
@@ -27,12 +28,20 @@ export default {
   },
   data() {
     return {
-      resultsArr: [],
+      events: [],
     };
   },
+  created() {
+    axios.get('/api/events/').then((res) => {
+      this.events = res.data.events;
+    });
+  },
   methods: {
-    display(variable) {
-      this.resultsArr = variable;
+    display(results) {
+      this.events = results;
+    },
+    deleteEvent(id) {
+      this.events = this.events.filter((event) => event.event_id !== id);
     },
   },
 };
@@ -43,13 +52,13 @@ export default {
   width:100%;
   display:grid;
   gap: 20px;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr;
 }
 
-@media(max-width: 1200px) {
+@media(min-width: 1200px) {
   .grid {
     display:grid;
-    grid-template-columns:1fr;
+    grid-template-columns:1fr 1fr;
   }
 }
 </style>

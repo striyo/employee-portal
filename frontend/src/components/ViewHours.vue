@@ -1,5 +1,9 @@
 <template>
   <div class="ViewHours">
+    <div class="loading" v-if="loading">
+      <div class="circle">
+      </div>
+    </div>
     <div class="title">
       <h2>View Hour</h2>
       <div class="line"></div>
@@ -17,35 +21,25 @@
       </div>
       <button>Search</button>
     </form>
-    <div
-      class="HoursDisplay"
-      v-for="hour in hours"
-      :key="`hour_${hour.hour_id}`"
-    >
- <div class="result">
-      <h3>{{setDate(hour.date)}}</h3>
-      <div class="row">
-        <div class="time-slots">
-          <p>Time In</p>
-          <p>{{setTime(hour.clock_in)}}</p>
-        </div>
-        <div class="time-slots">
-          <p>Meal In</p>
-          <p>{{setTime(hour.meal_in)}}</p>
-        </div>
-        <div class="time-slots">
-          <p>Meal Out</p>
-          <p>{{setTime(hour.meal_out)}}</p>
-        </div>
-        <div class="time-slots">
-          <p>Time Out</p>
-          <p>{{setTime(hour.clock_out)}}</p>
-        </div>
-        <div class="time-slots">
-          <p>Total</p>
-          <p>{{hour.total}}</p>
-          </div>
-        </div>
+    <div class="HoursDisplay"  >
+      <div class="result" v-for="hour in hours" :key="`hour_${hour.hour_id}`">
+        <h3>{{hour.formatted_date}}</h3>
+        <table>
+          <tr>
+            <th>Time In</th>
+            <th>Meal In</th>
+            <th>Meal Out</th>
+            <th>Time Out</th>
+            <th>Total Hours</th>
+          </tr>
+          <tr>
+            <td>{{hour.formatted_clock_in}}</td>
+            <td>{{hour.formatted_meal_in}}</td>
+            <td>{{hour.formatted_meal_out}}</td>
+            <td>{{hour.formatted_clock_out}}</td>
+            <td>{{hour.total}}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -61,20 +55,24 @@ export default {
       startDate: '',
       endDate: '',
       hours: [],
-      // result: '',
+      loading: false,
     };
   },
   methods: {
     submit() {
+      this.loading = true;
       let body = {
         startDate: this.startDate,
         endDate: this.endDate,
       };
       axios.post('/api/hours/search', body).then((res) => {
+        this.loading = false;
         this.hours = res.data.hour;
       }).catch((err) => {
+        this.loading = false;
+        console.log(err);
         let message = {
-          message: err,
+          message: err.response.data.message,
           error: true,
         };
         this.$store.dispatch('pushNotifications', message);
@@ -109,18 +107,27 @@ export default {
 
 <style lang="scss" scoped>
 .ViewHours {
+  position: relative;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   background-color: white;
   padding: 20px;
   .HoursDisplay {
     .result {
+      width:100%;
       margin-bottom: 20px;
-      .row {
-        display: flex;
-        border-bottom: 2px solid #f7f7f7;
-        padding-bottom: 5px;
-        .time-slots {
-          margin-right: 10px;
+      h3{
+        margin-bottom: 10px;
+      }
+      table{
+        text-align: left;
+        background-color:#eee;
+        width:100%;
+        tr{
+          border-bottom: red 1px solid;
+        }
+        td, th {
+          padding: 5px;
+          background-color:white;
         }
       }
     }

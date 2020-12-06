@@ -2,7 +2,11 @@
   <div>
     <Navbar v-if="$store.state.user != null" />
     <Notifications />
-    <router-view/>
+    <router-view v-slot="slotProps">
+      <transition name="fade" mode="out-in">
+        <component :is="slotProps.Component"> </component>
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -168,6 +172,29 @@ form{
     animation: loading 0.5s ease-in-out infinite alternate;
     background-color:#1FBD70;
   }
+}
+
+.fade-enter-active, .fade-leave-active{
+  transition: all 0.4s ease-in-out;
+}
+
+.fade-leave-from{
+  opacity: 1;
+}
+
+.fade-leave-to{
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.fade-enter-from{
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.fade-enter-to{
+  transform: translateY(0);
+  opacity: 1;
 }
 
 @keyframes loading {

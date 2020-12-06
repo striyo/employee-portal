@@ -16,5 +16,7 @@ module.exports = {
     'linebreak-style': 'off',
     'prefer-const': 'off',
     'max-len': 'off',
+    'radix': 'off',
+    'eqeqeq': 'off',
   },
 };

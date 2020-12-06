@@ -7,11 +7,30 @@ module.exports = router;
 const {getEvent, createEvent, updateEvent, deleteEvent,} = require('../model/EventModel');
 
 //send the post request
-router.post('/add', (req, res) => {
-  createEvent(req.body.startDate, req.body.endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.body).then(()=>{
+router.post('/', (req, res) => {
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+      message: "Access Denied",
+    });
+  }
 
+  if((!req.body.startTime) || (!req.body.endTime) || (!req.body.startDate) || (!req.body.endDate)) {
+    return res.status(422).json({
+      message: "Please input all dates and times",
+    });
+  }
+
+  // check if valid time
+  if((req.body.startDate > req.body.endDate) || ((req.body.startDate == req.body.endDate) && (req.body.startTime > req.body.endTime))){
+    return res.status(422).json({
+      message: "Times do not match time constraint",
+    });
+  }
+
+  // Save to db
+  createEvent(req.body.startDate, req.body.endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.body).then(()=>{
     return res.status(200).json({
-      message: 'Your event has been updated.',
+      message: 'Your event has been created',
     });
   }).catch((err)=>{
     console.log(err);
@@ -21,18 +40,59 @@ router.post('/add', (req, res) => {
   });
 })
 
-//send the post request
-router.post('/search', (req, res) => {
-  getEvent(req.body.title, req.body.startDate, req.body.endDate).then((events)=>{
-    let response = events;
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < events.length; i++) {
-      response[i].start_date = new Date(events[i].start_date);
-    }
-    const SortedEvents = response.sort((b, a) => b.start_date - a.start_date);
+router.get('/test', (req,res) => {
+  test().then((now) => {
+    return res.json({
+      now,
+    });
+  })
+})
+
+router.get('/', (req, res) => {
+  if(req.session.user == null){
+    return res.status(403).json({
+      message: "Access Denied",
+    });
+  }
+
+  getEvent(null, null, null).then((events) => {
     return res.status(200).json({
-      message: 'Events found',
-      events:SortedEvents,
+      message: "Events fetched",
+      events,
+    });
+  }).catch((err) => {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error in getting events",
+    });
+  });
+});
+
+// search events
+router.post('/search', (req, res) => {
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+        message: "Access Denied",
+    });
+  }
+
+
+  if( ( !req.body.startDate && req.body.endDate) || (req.body.startDate && !req.body.endDate)){
+    return res.status(422).json({
+      message: "Please fill out all dates if you want to include dates in your search query"
+    })
+  }
+
+  if (req.body.startDate > req.body.endDate) {
+    return res.status(422).json({
+      message: "Dates do not match time constraint",
+    });
+  }
+
+  getEvent(req.body.title, req.body.startDate, req.body.endDate).then((events)=>{
+    return res.status(200).json({
+      message: 'Events fetched',
+      events,
     });
   }).catch((err)=>{
     console.log(err);
@@ -44,8 +104,13 @@ router.post('/search', (req, res) => {
 
 //send the post request
 router.post('/delete', (req, res) => {
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+      message: "Access Denied",
+    });
+  }
+
   deleteEvent(req.body.event_id).then(()=>{
-    console.log(req.body.event_id);
     return res.status(200).json({
       message: 'Event deleted',
     });
@@ -60,14 +125,23 @@ router.post('/delete', (req, res) => {
 //delete event
 //send the post request
 router.post('/update', (req, res) => {
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+      message: "Access Denied",
+    });
+  }
+  if ((req.body.startTime > req.body.endTime) || (req.body.startDate > req.body.endDate)) {
+    return res.status(422).json({
+      message: "Times do not match time constraint",
+    });
+  }
   let startDate = new Date(req.body.startDate);
   let endDate = new Date(req.body.endDate);
-  updateEvent(req.body.id, startDate,endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.bodyParagraph).then(()=>{
+  updateEvent(req.body.id, startDate, endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.bodyParagraph).then(()=>{
     return res.status(200).json({
       message: 'Your event has been updated.',
     });
   }).catch((err)=>{
-    console.log('there is an error');
     console.log(err);
     return res.status(500).json({
       message: err,

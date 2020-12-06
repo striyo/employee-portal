@@ -13,11 +13,11 @@
       <div class="nav-items">
         <router-link to='/dashboard' :class="{'active': $route.name === 'Dashboard'}" ><i class="fas fa-home"></i> Dashboard</router-link>
         <router-link to='/personal' :class="{'active': $route.name === 'Personal'}"><i class="fas fa-user"></i> Personal</router-link>
-        <router-link to='/hours' :class="{'active': $route.name === 'Hours'}"><i class="fas fa-clock"></i> Hours</router-link>
-        <router-link to='/events' :class="{'active': $route.name === 'Events'}"><i class="fas fa-calendar"></i> Events</router-link>
+        <router-link to='/hours' :class="{'active': $route.name === 'Hours'}" v-if="$store.state.user.salaried == 0"><i class="fas fa-clock"></i> Hours</router-link>
+        <router-link to='/events' :class="{'active': $route.name === 'Events'}" v-if="$store.state.user.is_admin == 1"><i class="fas fa-calendar"></i> Events</router-link>
         <router-link to='/resources' :class="{'active': $route.name === 'Resources'}"><i class="fas fa-book-open"></i> Resources</router-link>
-        <router-link to='/users' :class="{'active': $route.name === 'Users'}"><i class="fas fa-users"></i> Users</router-link>
-        <router-link to='/timesheets' :class="{'active': $route.name === 'Timesheets'}"><i class="fas fa-user-clock"></i> Timesheets</router-link>
+        <router-link to='/users' :class="{'active': $route.name === 'Users'}" v-if="$store.state.user.is_admin == 1"><i class="fas fa-users"></i> Users</router-link>
+        <router-link to='/timesheets' :class="{'active': $route.name === 'Timesheets'}" v-if="$store.state.user.is_admin == 1"><i class="fas fa-user-clock"></i> Timesheets</router-link>
       </div>
     </div>
   </div>

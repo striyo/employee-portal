@@ -1,5 +1,9 @@
 <template>
 <div class="AddEvents">
+  <div class="loading" v-if="loading">
+    <div class="circle">
+    </div>
+  </div>
   <div class="title">
     <h2>Add Events</h2>
     <div class="line"></div>
@@ -28,10 +32,10 @@
     </div>
     <div class="form-row">
       <div class="form-group">
-        <input type="text" v-model="body" placeholder="Description">
+        <textarea v-model="body" placeholder="Description"> </textarea>
       </div>
     </div>
-    <button>Submit</button>
+    <button>Create</button>
   </form>
 </div>
 </template>
@@ -48,11 +52,13 @@ export default {
       endDate: null,
       startTime: null,
       endTime: null,
-      description: null,
+      body: '',
+      loading: false,
     };
   },
   methods: {
     submit() {
+      this.loading = true;
       let body = {
         title: this.title,
         startDate: this.startDate,
@@ -62,15 +68,22 @@ export default {
         body: this.body,
       };
       console.log(body);
-      axios.post('/api/events/add', body).then((res) => {
+      axios.post('/api/events/', body).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
         };
 
         this.$store.dispatch('pushNotifications', message);
-        console.log(res.data.message);
+        this.title = '';
+        this.startDate = null;
+        this.startTime = null;
+        this.endDate = null;
+        this.endTime = null;
+        this.body = '';
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,
@@ -90,5 +103,6 @@ export default {
   padding: 20px;
   background-color:white;
   margin-bottom: 20px;
+  position:relative;
 }
 </style>

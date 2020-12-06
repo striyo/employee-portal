@@ -40,7 +40,7 @@ const routes = [
     path: '/users',
     name: 'Users',
     component: Users,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: '/personal',
@@ -58,7 +58,7 @@ const routes = [
     path: '/events',
     name: 'Events',
     component: Events,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: '/resources',
@@ -70,7 +70,7 @@ const routes = [
     path: '/timesheets',
     name: 'Timesheets',
     component: Timesheets,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
 ];
 
@@ -87,7 +87,15 @@ router.beforeEach((to, from, next) => {
         // if logged in, update state.user next
         if (res.data.user) {
           store.dispatch('setUser', res.data.user);
-          next();
+          if (to.matched.some((record) => record.meta.requiresAuth)) {
+            if (res.data.user.is_admin) {
+              next();
+            } else {
+              next('/');
+            }
+          } else {
+            next();
+          }
         } else {
           next('/');
         }

@@ -7,13 +7,23 @@ const MySQLStore = require('express-mysql-session')(session);
 // variables
 const port = 3000 || process.env.PORT;
 const app = express();
+
+const dbPass = '';
 const sessionStoreOptions = {
-    host: 'taro-tech-db-do-user-8281352-0.b.db.ondigitalocean.com',
-    user: 'emerald',
-    password: 'y20fx7nomdmiao2b',
-    port: 25060,
-    database: 'portal'
+  host: 'localhost',
+  user: 'totee',
+  password: dbPass,
+  database: 'portal',
 }
+/*
+const sessionStoreOptions = {
+  host: 'taro-tech-db-do-user-8281352-0.b.db.ondigitalocean.com',
+  user: 'emerald',
+  password: 'y20fx7nomdmiao2b',
+  port: 25060,
+  database: 'portal'
+}
+*/
 let sessionStore = new MySQLStore(sessionStoreOptions);
 
 // Middleware
@@ -42,6 +52,10 @@ app.use('/api/events', require('./route/events.js'));
 app.use('/api/resources', require('./route/resources.js'));
 app.use('/api/timesheets', require('./route/timesheets.js'));
 app.use('/api/todos', require('./route/todos.js'));
+app.use(express.static('public'));
+app.get(/.*/, (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);

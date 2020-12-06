@@ -1,8 +1,12 @@
 <template>
   <div class="EditEvents">
     <div class="edit">
-      <h1>Edit Event: </h1>
-      <form @submit.prevent="save">
+      <p style="font-size: 20px; float:right; cursor: pointer" @click="$emit('close-popup')">X</p>
+      <div class="title">
+        <h2>Edit Events</h2>
+        <div class="line"></div>
+      </div>
+      <form @submit.prevent="save" class="edit-events">
         <div class="form-row">
           <div class="form-group">
             <input type="text" v-model="title" placeholder="Title">
@@ -10,10 +14,10 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <h3>Start Date: {{setDate(startDate)}}</h3><input type="date" v-model="startDate">
+            <h3>Start Date:</h3><input type="date" v-model="startDate">
           </div>
           <div class="form-group">
-            <h3>End Date: {{setDate(endDate)}}</h3><input type="date" v-model="endDate">
+            <h3>End Date:</h3><input type="date" v-model="endDate">
           </div>
         </div>
         <div class="form-row">
@@ -26,13 +30,10 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <textarea type="text" v-model="bodyParagraph" placeholder="Description"> </textarea>
+            <textarea v-model="bodyParagraph" placeholder="Description"> </textarea>
           </div>
         </div>
-        <div class="form-row">
-          <button class="close-btn" @click="$emit('close-edit')">Close</button>
-          <button class="edit-btn" type="submit" >Save</button>
-        </div>
+        <button class="edit-btn" type="submit" >Save</button>
       </form>
     </div>
   </div>
@@ -99,25 +100,32 @@ export default {
 
 <style lang="scss" scoped>
 .EditEvents{
-position:fixed;
-    padding:0;
-    margin:0;
-
-    top:0;
-    left:0;
-
-    width: 100%;
-    height: 100%;
-    background:rgba(255,255,255,0.8);
+  position:fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: auto;
+  z-index: 2;
+  background:rgba(0,0,0,0.4);
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .edit{
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-  padding: 20px;
-  font-size: 15px;
+  font-size: 16px;
   background-color:white;
-  margin-top: 5%;
-  margin-left: 30%;
-  width: 50%;
+  width: 80%;
+  max-width:800px;
+  padding: 20px;
+  .edit-events{
+    .form-row{
+      flex-direction: column;
+    }
+  }
 }
 
 .close-btn{
@@ -151,16 +159,14 @@ position:fixed;
   }
 }
 
-@media(max-width: 375px) {
-  .edit-btn {
-    padding: 10px 28px;
+@media(min-width:500px){
+  .edit{
+    .edit-events{
+      .form-row{
+        flex-direction: row;;
+      }
+    }
   }
 }
 
-@media(max-width: 1200px) {
-  .edit{
-    margin-left: 0px;
-    width: 100%;
-  }
-}
 </style>

@@ -108,7 +108,7 @@ export default {
   grid-template-columns: 1fr;
   gap: 20px;
 }
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .personal {
     grid-template-columns: 1fr 1fr;
   }

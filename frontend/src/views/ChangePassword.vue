@@ -2,6 +2,10 @@
   <div class="changepassword">
     <img src="@/assets/logo.png" alt="">
     <div class="login-box">
+      <div class="loading" v-if="loading">
+        <div class="circle">
+        </div>
+      </div>
       <h1>Password Recovery</h1>
       <form @submit.prevent="changepassword">
         <p style="margin-bottom: 10px">Please enter your new password</p>
@@ -27,10 +31,12 @@ export default {
     return {
       password: '',
       password2: '',
+      loading: false,
     };
   },
   methods: {
     changepassword() {
+      this.loading = true;
       // create request body
       let body = {
         user_id: this.$route.params.user_id,
@@ -40,6 +46,7 @@ export default {
       };
 
       axios.post('/api/users/changepassword', body).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
@@ -48,7 +55,9 @@ export default {
         this.$store.dispatch('pushNotifications', message);
         this.password = '';
         this.password2 = '';
+        this.$router.push('/');
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,
@@ -80,6 +89,7 @@ export default {
     width: 90%;
     max-width: 500px;
     background-color:white;
+    position: relative;
     h1{
       text-align: center;
       margin-bottom: 20px;

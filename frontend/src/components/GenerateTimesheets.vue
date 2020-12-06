@@ -1,5 +1,5 @@
 <template>
-  <div class="generatetime">
+  <div class="generatetime" @click="toggleAutoComplete">
     <div class="loading" v-if="loading">
       <div class="circle">
       </div>
@@ -11,7 +11,7 @@
     <form @submit.prevent="generate">
       <div class="form-checkbox">
         <input type="checkbox" v-model="all" />
-        <label>Generate for all users</label>
+        <label> Generate for all users</label>
       </div>
       <div class="form-group" v-if="all == false">
         <h3>Select Employee</h3>
@@ -23,8 +23,8 @@
           <label>No employees selected</label>
         </div>
         <div style="position:relative; width:100%">
-          <input type="text" v-model="showEmployee" placeholder="Enter an employee's name or email and click on the desired person">
-          <div class="auto-complete">
+          <input type="text" v-model="showEmployee" class="employee-input" placeholder="Enter an employee's name or email and click on the desired person">
+          <div class="auto-complete" v-if="focus">
             <p v-for="user in users " :key="`auto_${user.user_id}`" @click="selectUser(user)">{{user.name}} -- {{user.email}}</p>
           </div>
         </div>
@@ -58,6 +58,7 @@ export default {
       clicked: false,
       users: [],
       loading: false,
+      focus: false,
     };
   },
   watch: {
@@ -95,6 +96,9 @@ export default {
       this.showEmployee = '';
       this.users = [];
       this.click = true;
+    },
+    toggleAutoComplete(e) {
+      this.focus = e.target.className === 'employee-input';
     },
     removeSelection(user) {
       this.employees = this.employees.filter((employee) => employee.user_id !== user.user_id);

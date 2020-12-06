@@ -86,6 +86,12 @@ export default {
         this.is_admin = false;
       }).catch((err) => {
         this.loading = false;
+        let message = {
+          message: err.response.data.message,
+          error: true,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
         console.log(err.response.data);
         this.response = err.response.data.message;
       });
@@ -110,7 +116,7 @@ export default {
   }
 }
 
-@media(min-width:1300px){
+@media(min-width:1200px){
   .users{
     .container{
       grid-template-columns: 1fr 1fr;

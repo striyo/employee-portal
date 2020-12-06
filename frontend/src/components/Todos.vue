@@ -1,5 +1,5 @@
 <template>
-  <div class="Todos">
+  <div class="Todos" @click="toggleAutoComplete">
     <div class="title">
       <h2>Todos</h2>
       <div class="line"></div>
@@ -14,13 +14,15 @@
           <div class="no-selection" v-else>
             <label>No employees selected</label>
           </div>
+          <p v-if="peopleArr.length == 0">Leave blank if for yourself</p>
           <div style="position:relative; width:100%">
             <input
               type="text"
               v-model="people"
-              placeholder="Person A, Person B, ..."
+              placeholder="Enter an employee's name and select the correct one"
+              class="employee-input"
             />
-            <div class="auto-complete">
+            <div class="auto-complete" v-if="focus">
               <p v-for="user in users " :key="`auto_${user.user_id}`" @click="selectUser(user)">{{user.name}} -- {{user.email}}</p>
             </div>
           </div>
@@ -28,7 +30,7 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <input type="text" v-model="description" placeholder="Description" />
+          <input type="text" v-model="description" placeholder="Item" />
         </div>
       </div>
       <button>Create</button>
@@ -42,9 +44,11 @@
     <form>
       <div class="form-checkbox" v-for="todo in todos"
       :key="`todo_${todo.todos_receiver_id}`">
-        <template> {{todo.complete = Boolean(todo.complete)}} </template>
-        <input type="checkbox" @change="updateTodo(todo)"
-        v-model="todo.complete"> <label>{{todo.item}}</label>
+        <div v-if="todo.complete == type">
+          <template> {{todo.complete = Boolean(todo.complete)}} </template>
+          <input type="checkbox" @change="updateTodo(todo)"
+          v-model="todo.complete"> <label>{{todo.item}}</label>
+        </div>
       </div>
     </form>
   </div>
@@ -64,10 +68,11 @@ export default {
       todos: [],
       click: false,
       type: 0,
+      focus: false,
     };
   },
   created() {
-    this.getTodos(0);
+    this.getTodos();
   },
   watch: {
     people(val) {
@@ -97,9 +102,6 @@ export default {
         this.users = [];
       }
     },
-    type(val) {
-      this.getTodos(val);
-    },
   },
   methods: {
     selectUser(user) {
@@ -109,6 +111,9 @@ export default {
       this.click = true;
       this.type = 0;
     },
+    toggleAutoComplete(e) {
+      this.focus = e.target.className === 'employee-input';
+    },
     removeSelection(user) {
       this.peopleArr = this.peopleArr.filter((person) => person.user_id !== user.user_id);
     },
@@ -117,14 +122,14 @@ export default {
         peopleArr: this.peopleArr,
         description: this.description,
       };
-      axios.post('/api/todos/', body).then((res) => {
+      axios.post('/api/todos', body).then((res) => {
         let message = {
           message: res.data.message,
           error: false,
         };
 
         this.$store.dispatch('pushNotifications', message);
-        this.getTodos(this.type);
+        this.getTodos();
         this.description = '';
         this.peopleArr = [];
         console.log(res.data.message);
@@ -138,8 +143,9 @@ export default {
         console.log(err.response.data.message);
       });
     },
-    getTodos(type) {
-      axios.get(`/api/todos/${type}`).then((res) => {
+    getTodos() {
+      axios.get('/api/todos/all').then((res) => {
+        console.log(res.data.todos);
         this.todos = res.data.todos;
       }).catch((err) => {
         console.log(err.response.data);
@@ -151,37 +157,36 @@ export default {
         completed: todo.complete,
       };
 
-      axios.put('/api/todos/', body).then((res) => {
-        this.getTodos(this.type);
-        let message = {
-          message: res.data.message,
-          error: false,
-        };
-
-        this.$store.dispatch('pushNotifications', message);
+      axios.put('/api/todos/', body).then(() => {
+        // this.getTodos(this.type);
       }).catch((err) => {
         let message = {
           message: err.response.data.message,
           error: false,
         };
 
+        for (let i = 0; i < this.todos.length; i += 1) {
+          if (this.todos[i].todos_id === todo.todos_id) {
+            this.todos[i].completed = !this.todos[i].completed;
+          }
+        }
         this.$store.dispatch('pushNotifications', message);
         console.log(err.response.data);
       });
     },
     deleteTodos() {
       axios.delete('/api/todos/').then((res) => {
-        this.getTodos(this.type);
+        // this.getTodos(this.type);
         let message = {
           message: res.data.message,
           error: false,
         };
-
+        this.getTodos();
         this.$store.dispatch('pushNotifications', message);
       }).catch((err) => {
         let message = {
           message: err.response.data.message,
-          error: false,
+          error: true,
         };
 
         this.$store.dispatch('pushNotifications', message);

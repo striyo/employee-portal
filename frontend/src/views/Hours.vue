@@ -2,8 +2,8 @@
   <div class="hours page">
     <div class="grid">
       <div class="left">
-        <TotalHours />
-        <LogHours />
+        <TotalHours ref="total" />
+        <LogHours v-on:update-total="$refs.total.getTotalHours()"/>
       </div>
       <div class="right">
         <ViewTimesheets />
@@ -26,6 +26,11 @@ export default {
     ViewHours,
     ViewTimesheets,
   },
+  created() {
+    if (this.$store.state.user.salaried) {
+      this.$router.push('/dashboard');
+    }
+  },
 };
 </script>
 
@@ -42,7 +47,7 @@ h1 {
   grid-template-columns: 1fr;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .grid {
     grid-template-columns: 1fr 1fr;
   }
