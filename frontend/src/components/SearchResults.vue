@@ -5,21 +5,21 @@
     <div class="line"></div>
   </div>
   <div
-    v-for="event in resultArr"
-    :key="event.id"
+    v-for="event in events"
+    :key="event.event_id"
     class="grid"
+    style="border-bottom: 1px solid #ccc"
   >
     <div class="left">
-      <p>{{setDate(event.start_date)}}   @{{setTime(event.start_time)}}</p>
+      <p>{{event.formatted_start_date}}{{`${event.formatted_start_date == event.formatted_end_date ? ` @${event.formatted_start_time} - ${event.formatted_end_time}` : ` @${event.formatted_start_time} - ${event.formatted_end_date} ${event.formatted_end_time}`}`}}</p>
       <h3>{{event.title}}</h3>
     </div>
     <div class="right">
-        <button class="edit-btn" @click="setEvent(event), edit=true">Edit</button>
-        <button class="delete-btn" @click="deleteEvent(event)">Delete</button>
+      <button class="edit-btn" @click="setEvent(event); edit=true">Edit</button>
+      <button class="delete-btn" @click="deleteEvent(event)">Delete</button>
     </div>
     <div v-if="edit==true">
-
-      <EditEvents v-bind:event="this.event" v-on:close-edit="edit=false"/>
+      <EditEvents v-bind:event="this.event" v-on:close-popup="edit=false"/>
     </div>
   </div>
 </div>
@@ -32,24 +32,15 @@ import EditEvents from './EditEvents.vue';
 
 export default {
   name: 'SearchResults',
-  props: {
-    resultArr: Array,
-  },
+  props: ['events'],
   components: {
     EditEvents,
   },
   data() {
     return {
-      event: null,
       edit: false,
     };
   },
-  watch: {
-    resultArr(val) {
-      this.events = val;
-    },
-  },
-
   methods: {
     setTime(time) {
       let theTime = (time.split(':'));
@@ -89,7 +80,7 @@ export default {
         };
 
         this.$store.dispatch('pushNotifications', message);
-        console.log(res.data.message);
+        this.$emit('event-deleted', event.event_id);
       }).catch((err) => {
         let message = {
           message: err.response.data.message,
@@ -100,13 +91,6 @@ export default {
         console.log(err.response.data.message);
       });
     },
-  // closeEdit() {
-  // edit= false;
-  // want to rerender
-  // },
-  // view() {
-  //   console.log(this.event);
-  // },
   },
 };
 </script>
@@ -121,9 +105,9 @@ export default {
   width:100%;
   display:grid;
   gap: 20px;
-  margin: 15px 0px;
-  //grid-row:1/span 2;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr;
+  padding: 10px 0;
+  margin-bottom: 10px;
 }
 .edit-btn{
   padding: 10px 20px;
@@ -161,9 +145,21 @@ button{
   text-align: start;
 }
 
-@media(max-width: 1200px) {
-  .edit-btn{
-    padding: 10px 28px;
+@media(min-width:600px){
+  .grid{
+    grid-template-columns: 1fr 200px;
   }
 }
+@media(min-width:1200px){
+  .grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(min-width:1300px){
+  .grid{
+    grid-template-columns: 1fr 200px;
+  }
+}
+
 </style>

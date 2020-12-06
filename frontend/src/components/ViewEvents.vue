@@ -4,9 +4,9 @@
       <h2>Events</h2>
       <div class="line"></div>
     </div>
-    <div v-for="event in events" :key="event.id" >
+    <div v-for="event in events" :key="event.id" style="border-bottom: 1px solid #ccc" >
       <div class="event" v-on:click="viewEvent(event)">
-        <p>{{setDate(event.start_date)}}   @{{setTime(event.start_time)}}</p>
+        <p>{{event.formatted_start_date}}{{`${event.formatted_start_date == event.formatted_end_date ? ` @${event.formatted_start_time} - ${event.formatted_end_time}` : ` @${event.formatted_start_time} - ${event.formatted_end_date} ${event.formatted_end_time}`}`}}</p>
         <h3>{{event.title}}</h3>
       </div>
     </div>
@@ -34,17 +34,7 @@ export default {
     DisplayEvent,
   },
   created() {
-    const today = new Date();
-    let year = today.getFullYear();
-    let month = today.getMonth() + 1;
-    let day = today.getDate();
-    let todayDate = `${year}-${month}-${day}`;
-    let body = {
-      title: '',
-      startDate: todayDate,
-      endDate: '9999-12-30',
-    };
-    axios.post('/api/events/search', body).then((res) => {
+    axios.get('/api/events/').then((res) => {
       this.events = res.data.events;
     }).catch((err) => {
       let message = {
@@ -98,12 +88,20 @@ h2{
   margin-right: 0px;
 }
 .event{
-  margin: 5px 0px;
+  padding: 5px;
+  transition: all 0.2s ease-out;
 }
 .event:hover{
-  transform: scale(1.1, 1.1);
   box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   background-color: #1FBD70;
   color: white;
+  cursor: pointer;
+}
+
+@media(min-width:1200px){
+  .ViewEvents{
+    height: 80vh;
+    overflow: auto;
+  }
 }
 </style>

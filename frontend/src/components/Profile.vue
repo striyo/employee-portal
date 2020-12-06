@@ -1,9 +1,17 @@
 <template>
   <div class="profile">
+    <div class="loading" v-if="loading">
+      <div class="circle">
+      </div>
+    </div>
+    <div class="title">
+      <h2>Profile</h2>
+      <div class="line"></div>
+    </div>
     <div class="profile-main">
       <div class="profile-picture" @click="edit = !edit">
         <img :src="`${$store.state.user.profile_picture == null ? 'https://cdn3.iconfinder.com/data/icons/shipping-and-delivery-2-1/512/54-512.png' : `/api/users/picture/${$store.state.user.profile_picture}`}`" alt="">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" style="z-index: 0"></i>
       </div>
       <div class="profile-info">
         <form @submit.prevent="savePicture" v-if="edit" style="max-width:300px; margin-bottom: 20px;" id="pictureForm">
@@ -35,10 +43,12 @@ export default {
       rate: this.$store.state.user.rate,
       salaried: this.$store.state.user.salaried,
       edit: false,
+      loading: false,
     };
   },
   methods: {
     savePicture() {
+      this.loading = true;
       let body = new FormData();
       body.append('picture', document.getElementById('picture').files[0]);
       body.append('user_id', this.$store.state.user.user_id);
@@ -51,6 +61,7 @@ export default {
       body.append('rate', this.$store.state.user.rate);
 
       axios.put('/api/users/picture', body, { headers: { 'content-type': 'multipart/form-data' } }).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
@@ -60,6 +71,7 @@ export default {
         document.getElementById('pictureForm').reset();
         this.edit = false;
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,
@@ -68,6 +80,7 @@ export default {
       });
     },
     changepassword() {
+      this.loading = true;
       let body = {
         email: this.$store.state.user.email,
       };
@@ -86,8 +99,14 @@ export default {
         };
 
         this.$store.dispatch('pushNotifications', message);
-        setTimeout(() => axios.post('/api/users/logout'), 5000);
+        setTimeout(() => {
+          axios.post('/api/users/logout').then(() => {
+            this.$store.dispatch('deleteUser');
+            this.$router.push('/');
+          });
+        }, 5000);
       }).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
@@ -96,6 +115,7 @@ export default {
         this.$store.dispatch('deleteUser');
         this.$router.push('/');
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,
@@ -113,6 +133,7 @@ export default {
   padding: 20px;
   background-color: white;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
   .profile-main{
     display:grid;
     grid-template-columns: 1fr;

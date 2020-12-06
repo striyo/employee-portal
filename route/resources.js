@@ -80,6 +80,7 @@ router.post('/purchase', (req, res) => {
     items: req.body.items,
     purpose: req.body.purpose,
     total: req.body.total,
+    date: (new Date()).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}),
   };
 
   // generate pdf
@@ -114,7 +115,7 @@ router.post('/report', upload.single('document'), (req, res) => {
   console.log(req.file);
   // check if logged in
   if (req.session.user == null){
-    return res.status(401).json({
+    return res.status(403).json({
       message: 'Unauthorized',
     });
   }
@@ -182,7 +183,7 @@ router.post('/report', upload.single('document'), (req, res) => {
 router.get('/doc/:file', (req,res) => {
   // check if logged in
   if(req.session.user == null){
-    return res.status(401).json({
+    return res.status(403).json({
       message: "Access Denied",
     });
   }
@@ -204,7 +205,7 @@ router.get('/doc/:file', (req,res) => {
 router.get('/doc', (req, res) => {
   // check if logged in
   if(req.session.user == null){
-    return res.status(401).json({
+    return res.status(403).json({
       message: "Access Denied",
     });
   }

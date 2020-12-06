@@ -32,7 +32,7 @@ export default {
   gap: 20px;
 }
 
-@media(min-width:1024px){
+@media(min-width:1200px){
   .resources{
     grid-template-columns: 1fr 1fr;
   }

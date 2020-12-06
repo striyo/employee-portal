@@ -2,6 +2,10 @@
   <div class="forgotpassword">
     <img src="@/assets/logo.png" alt="">
     <div class="login-box">
+      <div class="loading" v-if="loading">
+        <div class="circle">
+        </div>
+      </div>
       <h1>Password Recovery</h1>
       <form @submit.prevent="forgotpassword">
         <p style="margin-bottom: 10px">Please enter your email and we will email you a link to reset your password</p>
@@ -23,16 +27,19 @@ export default {
   data() {
     return {
       email: '',
+      loading: false,
     };
   },
   methods: {
     forgotpassword() {
       // create request body
+      this.loading = true;
       let body = {
         email: this.email,
       };
 
       axios.post('/api/users/forgotpassword', body).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
@@ -41,6 +48,7 @@ export default {
         this.$store.dispatch('pushNotifications', message);
         this.email = '';
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,

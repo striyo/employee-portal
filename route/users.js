@@ -7,7 +7,7 @@ const multer = require('multer');
 const bcrypt = require('bcrypt');
 const generator = require('generate-password');
 const {getUser, getAllUser, createUser, updatePassword, searchUsers, updateUser, updateUserPicture} = require('../model/UserModel.js');
-const {createResetToken, deleteResetToken, getResetToken} = require('../model/PwdResetModel.js');
+const {checkResetToken, createResetToken, deleteResetToken, getResetToken, deleteResetTokenByUserId} = require('../model/PwdResetModel.js');
 const template = require('../config/emailTemplate.js');
 const mail = require('../config/email.js');
 const path = require('path');
@@ -34,6 +34,9 @@ var upload = multer(
     }
   }
 );
+
+const resetLink = 'https://employee.royalemeraldrx.com/changepassword/';
+// const resetLink = 'http://localhost:8080/changepassword/';
 
 // routes
 
@@ -109,158 +112,173 @@ router.post('/logout', (req, res) => {
 
 // register
 router.post('/register', (req, res) => {
-    const saltRounds = 10;
-
-    // check if the person making request is logged in and an admin
-    /*
-    if (!req.session.user.isAdmin) {
-      return res.status(403).json({
-        message: "Unathorized",
-      });
-    }
-    */
-
-    // check if all fields are filled
-    if (!req.body.name || !req.body.phone || !req.body.email || !req.body.rate || req.body.salaried == null || req.body.is_admin == null) {
-        return res.status(422).json({
-            message: "Please fill out all required fields",
-        });
-    }
-
-    // generate random password
-    let password = generator.generate({ length: 15, numbers: true });
-
-    // hash password
-    bcrypt.hash(password, saltRounds).then((hash) => {
-        return createUser(req.body.name, req.body.phone, req.body.email, hash, req.body.rate, req.body.salaried, req.body.is_admin, true)
-    }).then(() => {
-        // Email information
-        let mailInfo = {
-            from: '"Royal Emerald Portal" <portal@re-rx.com>',
-            to: req.body.email,
-            subject: "Royal Emerald Portal Account",
-            html: template.userInfoTemplate(req.body.name, req.body.email, password),
-        };
-
-        // email the user
-        return mail.transporter.sendMail(mailInfo);
-    }).then(() => {
-        return res.status(200).json({
-            message: 'User created',
-        });
-    }).catch((err, status = 500) => {
-        return res.status(status).json({
-            message: err,
-        });
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+      message: "Access Denied",
     });
+  }
+
+  // check if all fields are filled
+  if (!req.body.name || !req.body.phone || !req.body.email || !req.body.rate || req.body.salaried == null || req.body.is_admin == null) {
+    return res.status(422).json({
+      message: "Please fill out all required fields",
+    });
+  }
+
+  const saltRounds = 10;
+
+  // generate random password
+  let password = generator.generate({ length: 15, numbers: true });
+
+  // hash password
+  bcrypt.hash(password, saltRounds).then((hash) => {
+    return createUser(req.body.name, req.body.phone, req.body.email, hash, req.body.rate, req.body.salaried, req.body.is_admin, true)
+  }).then(() => {
+    // Email information
+    let mailInfo = {
+      from: '"Royal Emerald Portal" <portal@re-rx.com>',
+      to: req.body.email,
+      subject: "Royal Emerald Portal Account",
+      html: template.userInfoTemplate(req.body.name, req.body.email, password),
+    };
+
+    // email the user
+    return mail.transporter.sendMail(mailInfo);
+  }).then(() => {
+      return res.status(200).json({
+          message: 'User created',
+      });
+  }).catch((err, status = 500) => {
+    let temp = 'Internal server error in registering user';
+    if(err.code != null && err.code == 'ER_DUP_ENTRY'){
+      temp = 'Email already in use';
+    }
+      return res.status(status).json({
+          message: temp,
+      });
+  });
 });
 
 // forgot password
 router.post('/forgotpassword', (req, res) => {
-    // check if user input email
-    if (!req.body.email) {
-        return res.status(422).json({
-            message: 'Please enter your email',
-        });
+  // check if user input email
+  if (!req.body.email) {
+    return res.status(422).json({
+      message: 'Please enter your email',
+    });
+  }
+
+  let user = null;
+  let token = generator.generate({ length: 50, numbers: true });
+
+  // check if user exists
+  getUser(req.body.email).then((data) => {
+    user = data[0];
+    // if the user doesn't exist
+    if (data.length == 0) {
+      return Promise.reject('A password reset link has been has been sent to the specified email', 200);
     }
 
-    let user = null;
-    let token = generator.generate({ length: 50, numbers: true });
-
-    // check if user exists
-    getUser(req.body.email).then((data) => {
-        user = data;
-        // if the user doesn't exist
-        if (data.length == 0) {
-            return Promise.reject('A password reset link has been has been sent to the specified email', 200);
-        }
-
-        return bcrypt.hash(token, 10);
-    }).then((hash) => {
-        return createResetToken(user[0].user_id, hash);
-    }).then(() => {
-        let link = `http://localhost:8080/changepassword/${user[0].user_id}/${token}`;
-        let mailInfo = {
-            from: '"Royal Emerald Portal" <portal@re-rx.com>',
-            to: req.body.email,
-            subject: "Royal Emerald Portal Password Reset",
-            html: template.passwordResetTemplate(link),
-        };
-
-        return mail.transporter.sendMail(mailInfo);
-    }).then(() => {
-        return res.status(200).json({
-            message: 'A password reset link has been sent to the specified email. Please check your email for further instructions on how to reset your password.',
-        });
-    }).catch((err, status = 500) => {
-        console.log(err);
-        res.status(status).json({
-            message: err,
-        });
+    // check if token already exists for the given user
+    return checkResetToken(user.user_id);
+  }).then((resetToken) => {
+    return new Promise((resolve, reject) => {
+      if(resetToken.length != 0){
+        deleteResetTokenByUserId(user.user_id).then(() => {
+          resolve();
+        }).catch(() => {
+          reject('Internal server error in generating password reset link');
+        })
+      } else {
+        resolve();
+      }
     });
+  }).then(() => {
+    return bcrypt.hash(token, 10);
+  }).then((hash) => {
+    return createResetToken(user.user_id, hash);
+  }).then(() => {
+    let link = `${resetLink}${user.user_id}/${token}`;
+    let mailInfo = {
+      from: '"Royal Emerald Portal" <portal@re-rx.com>',
+      to: req.body.email,
+      subject: "Royal Emerald Portal Password Reset",
+      html: template.passwordResetTemplate(link),
+    };
+
+    return mail.transporter.sendMail(mailInfo);
+  }).then(() => {
+    return res.status(200).json({
+      message: 'A password reset link has been sent to the specified email. Please check your email for further instructions on how to reset your password.',
+    });
+  }).catch((err, status = 500) => {
+    console.log(err);
+    res.status(status).json({
+        message: err,
+    });
+  });
 });
 
 // change password
 router.post('/changepassword', (req, res) => {
-    // check if input is filled
-    if (!req.body.password || !req.body.password2) {
-        return res.status(422).json({
-            message: "Please fill out all required form fields",
-        });
+  // check if input is filled
+  if (!req.body.password || !req.body.password2) {
+      return res.status(422).json({
+          message: "Please fill out all required form fields",
+      });
+  }
+
+  // check if password matches
+  if (req.body.password != req.body.password2) {
+      return res.status(422).json({
+          message: "Passwords do not match",
+      });
+  }
+
+  // check if password is 8 char or more
+  if (req.body.password.length < 8) {
+      return res.status(422).json({
+          message: "Password must be at least 8 characters",
+      });
+  }
+
+  let resetToken = null;
+
+  // get reset token
+  getResetToken(req.body.user_id).then((reset) => {
+    resetToken = reset;
+
+    // check if token exists and not expired
+    if (reset.length == 0) {
+      return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
     }
 
-    // check if password matches
-    if (req.body.password != req.body.password2) {
-        return res.status(422).json({
-            message: "Passwords do not match",
-        });
-    }
+    // check if the token is valid
+    return bcrypt.compare(req.body.token, reset[0].token);
+  }).then((compareResult) => {
+      if (!compareResult) {
+          return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
+      }
 
-    // check if password is 8 char or more
-    if (req.body.password.length < 8) {
-        return res.status(422).json({
-            message: "Password must be at least 8 characters",
-        });
-    }
-
-    let resetToken = null;
-
-    // get reset token
-    let token = getResetToken(req.body.user_id);
-    token.then((reset) => {
-        resetToken = reset;
-
-        // check if token exists and not expired
-        if (reset.length == 0) {
-            return Promise.reject('Invalid Credentials', 401);
-        }
-
-        // check if the token is valid
-        return bcrypt.compare(req.body.token, reset[0].token);
-    }).then((compareResult) => {
-        if (!compareResult) {
-            return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
-        }
-
-        // hash password
-        return bcrypt.hash(req.body.password, 10);
-    }).then((hash) => {
-        // update password
-        return updatePassword(req.body.user_id, hash);
-    }).then(() => {
-        // delete token and return success message
-        return deleteResetToken(resetToken[0].reset_id);
-    }).then(() => {
-        return res.status(200).json({
-            message: "Your password was successfully reset",
-        });
-    }).catch((err, status = 500) => {
-        // log any error
-        console.log(err);
-        return res.status(status).json({
-            message: err,
-        });
-    })
+      // hash password
+      return bcrypt.hash(req.body.password, 10);
+  }).then((hash) => {
+      // update password
+      return updatePassword(req.body.user_id, hash);
+  }).then(() => {
+      // delete token and return success message
+      return deleteResetToken(resetToken[0].reset_id);
+  }).then(() => {
+      return res.status(200).json({
+          message: "Your password was successfully reset",
+      });
+  }).catch((err, status = 500) => {
+      // log any error
+      console.log(err);
+      return res.status(status).json({
+          message: err,
+      });
+  })
 });
 
 router.post('/search', (req, res) => {
@@ -350,9 +368,9 @@ router.put('/', (req, res) => {
 
     // query db
     updateUser(req.body.user).then(() => {
-        return res.status(200).json({
-            message: 'Employee info updated',
-        });
+      return res.status(200).json({
+          message: 'Employee info updated',
+      });
     }).catch((err) => {
         console.log(err);
         return res.status(500).json({
@@ -365,7 +383,7 @@ router.put('/', (req, res) => {
 router.get('/picture/:file', (req, res) => {
   // check if logged in
   if(req.session.user == null){
-    return res.status(401).json({
+    return res.status(403).json({
       message: "Access Denied",
     });
   }

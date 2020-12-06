@@ -1,3 +1,81 @@
+const style = `
+  <style>
+    *{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    img{
+      display:block;
+      margin: auto;
+      width: 200px;
+      margin-bottom: 50px;
+    }
+    body{
+      padding: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.8em;
+    }
+    .title{
+      width:100%;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .input{
+      border-bottom: 1px solid #333;
+      margin-bottom: 10px;
+    }
+    .input h3{
+      margin-bottom: 5px;
+    }
+    .box{
+      width:100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: solid 1px #666;
+      min-height: 100px;
+      white-space: pre-wrap;
+    }
+    .time-table{
+      margin: auto;
+      margin-bottom: 20px;
+    }
+    .table{
+      background-color:#f7f7f7;
+      border: solid 1px #333;
+      width:100%;
+      border-collapse: collapse;
+    }
+
+    .table th{
+      text-align: left;
+      padding: 5px;
+      border: 1px solid #333;
+    }
+    .table td{
+      padding: 2px 5px;
+      border: 1px solid #dddddd;
+    }
+    .table tr:nth-child(odd) {
+      background-color: #d6d6d6;
+    }
+    .table-label{
+      border-bottom: solid 5px #333;
+      background-color:#15588f !important;
+      color:white;
+    }
+    
+    .signature{
+      width:100%;
+      margin-top: 50px;
+    }
+
+    .signature tr td{
+      border-top: 1px solid #333;
+    }
+  </style>
+`;
+
 function userInfoTemplate(name, email, password){
   return `
     <style>
@@ -68,38 +146,21 @@ function timeOffTemplate(name, startDate, endDate, reason){
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-        *{
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-        h3, h1{
-          text-align: center
-        }
-        img{
-          display:block;
-          margin:auto;
-        }
-        body{
-          padding: 20px;
-        }
-        .reason{
-          margin-top: 20px;
-          width:100%;
-          padding: 10px;
-          border: solid 2px #e6e6e6;
-        }
-      </style>
+      ${style}
     </head>
     <body>
       <img src="https://royalemeraldrx.com/img/mainlogo.png" style="width:200px">  
       <h1>Time Off Request</h1>
       <h3>${startDate} to ${endDate}</h3>
-      <p>Name:</p>
-      <p>${name}</p>
-      <div class="reason">
-        ${reason}
+      <div class="input">
+        <h3>Name</h3>
+        <p>${name}</p>
+      </div>
+      <div class="input">
+        <h3>Reason</h3>
+        <div class="box">
+          ${reason}
+        </div>
       </div>
     </body>
     </html>
@@ -127,6 +188,8 @@ function purchaseTemplate(data) {
         }
         body{
           padding: 20px;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 0.8em;
         }
         .title{
           width:100%;
@@ -301,11 +364,11 @@ function timesheetTemplate(startDate, endDate, employee, hours) {
   for(let i = 0; i < hours.length; i++){
     let row = `
       <tr>
-        <td>${hours[i].date}</td>
-        <td>${hours[i].clock_in}</td>
-        <td>${hours[i].meal_in}</td>
-        <td>${hours[i].meal_out}</td>
-        <td>${hours[i].clock_out}</td>
+        <td>${hours[i].formatted_date}</td>
+        <td>${hours[i].formatted_clock_in}</td>
+        <td>${hours[i].formatted_meal_in}</td>
+        <td>${hours[i].formatted_meal_out}</td>
+        <td>${hours[i].formatted_clock_out}</td>
         <td>${hours[i].total}</td>
       </tr>
     `;
@@ -325,92 +388,24 @@ function timesheetTemplate(startDate, endDate, employee, hours) {
   `;
   hoursRow = `${hoursRow} ${row}`;
 
+  let start = new Date(startDate);
+  let end = new Date(endDate);
+  start.setDate(start.getDate() + 1)
+  end.setDate(end.getDate() + 1)
+
   return `
   <!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      *{
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      img{
-        display:block;
-        margin: auto;
-        width: 200px;
-        margin-bottom: 50px;
-      }
-      body{
-        padding: 20px;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 0.8em;
-      }
-      .title{
-        width:100%;
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      .input{
-        border-bottom: 1px solid #333;
-        margin-bottom: 10px;
-      }
-      .input h3{
-        margin-bottom: 5px;
-      }
-      .box{
-        width:100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: solid 1px #666;
-        min-height: 100px;
-      }
-      .time-table{
-        margin: auto;
-        margin-bottom: 20px;
-      }
-      .table{
-        background-color:#f7f7f7;
-        border: solid 1px #333;
-        width:100%;
-        border-collapse: collapse;
-      }
-  
-      .table th{
-        text-align: left;
-        padding: 5px;
-        border: 1px solid #333;
-      }
-      .table td{
-        padding: 2px 5px;
-        border: 1px solid #dddddd;
-      }
-      .table tr:nth-child(odd) {
-        background-color: #d6d6d6;
-      }
-      .table-label{
-        border-bottom: solid 5px #333;
-        background-color:#15588f !important;
-        color:white;
-      }
-      
-      .signature{
-        width:100%;
-        margin-top: 50px;
-      }
-  
-      .signature tr td{
-        border-top: 1px solid #333;
-      }
-    </style>
+    ${style}
   </head>
   <body>
     <img src="https://royalemeraldrx.com/img/mainlogo.png">  
     <div class="title">
       <h1>Timesheet</h1>
-      <h3>${(new Date(startDate)).toLocaleDateString('en-US', options)} - ${(new Date(endDate)).toLocaleDateString('en-US', options)}</h3>
+      <h3>${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}</h3>
       <p>${employee.name}</p>
     </div>
     <div class="time-table">
@@ -421,7 +416,7 @@ function timesheetTemplate(startDate, endDate, employee, hours) {
           <th>Meal In</th>
           <th>Meal Out</th>
           <th>Time Out</th>
-          <th>Total</th>
+          <th>Total Hours</th>
         </tr>
         ${hoursRow}
       </table>

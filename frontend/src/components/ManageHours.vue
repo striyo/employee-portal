@@ -1,77 +1,72 @@
 <template>
   <div class="ManageHours">
+    <div class="loading" v-if="loading">
+      <div class="circle">
+      </div>
+    </div>
     <div class="title">
-      <h2>View Hours</h2>
+      <h2>Manage Hours</h2>
       <div class="line"></div>
     </div>
     <form @submit.prevent="search">
       <div class="form-row">
         <div class="form-group">
-          <input type="text" placeholder="Name" required v-model="searchID" />
+          <input type="text" placeholder="Name" v-model="searchID" />
         </div>
       </div>
       <div class="form-row dates">
         <div class="form-group">
           <h3>Start Date</h3>
-          <input type="date" required v-model="startDate" />
+          <input type="date" v-model="startDate" />
         </div>
         <div class="form-group">
           <h3>End Date</h3>
-          <input type="date" required v-model="endDate" />
+          <input type="date" v-model="endDate" />
         </div>
       </div>
       <button>Search</button>
     </form>
     <div
       class="HoursDisplay"
-      v-for="(hour, index) in hours"
-      :key="`hour_${hour.hours_id}`"
     >
-      <div class="result">
+      <div class="result"
+        v-for="(hour, index) in hours"
+        :key="`hour_${hour.hours_id}`"
+      >
         <h3 v-if="isNameDiff(hours, index)">{{ hour.name }}</h3>
-        <h4>{{ setDate(hour.date) }}</h4>
+        <h4>{{hour.date}}</h4>
         <div class="row">
-          <div class="time-slots">
-            <p>Time In</p>
-            <input type="time" v-model="hour.clock_in" />
+          <div class="time-group">
+            <div class="time-slots">
+              <p>Time In</p>
+              <input type="time" v-model="hour.clock_in" />
+            </div>
+            <div class="time-slots">
+              <p>Meal In</p>
+              <input type="time" v-model="hour.meal_in" />
+            </div>
           </div>
-          <div class="time-slots">
-            <p>Meal In</p>
-            <input type="time" v-model="hour.meal_in" />
+          <div class="time-group">
+            <div class="time-slots">
+              <p>Meal Out</p>
+              <input type="time" v-model="hour.meal_out" />
+            </div>
+            <div class="time-slots">
+              <p>Time Out</p>
+              <input type="time" v-model="hour.clock_out" />
+            </div>
           </div>
-          <div class="time-slots">
-            <p>Meal Out</p>
-            <input type="time" v-model="hour.meal_out" />
-          </div>
-          <div class="time-slots">
-            <p>Time Out</p>
-            <input type="time" v-model="hour.clock_out" />
-          </div>
-          <div class="time-slots">
-            <p>Total</p>
-            <p>{{ hour.total }}</p>
-          </div>
-          <div>
-            <button
-              class="save-btn"
-              @click="
-                save(
-                  hour.clock_in,
-                  hour.meal_in,
-                  hour.meal_out,
-                  hour.clock_out,
-                  hour.date,
-                  hour.user_id
-                )
-              "
-            >
-              Save
-            </button>
-          </div>
-          <div>
-            <button class="delete-btn" @click="deleteHours(hour.hours_id)">
-              Delete
-            </button>
+          <div class="time-group">
+            <div class="time-slots">
+              <p>Total</p>
+              <p>{{ hour.total }}</p>
+            </div>
+            <div>
+              <button class="save-btn" @click="save(hour)" > Save </button>
+            </div>
+            <div>
+              <button class="delete-btn" @click="deleteHours(hour.hours_id)"> Delete </button>
+            </div>
           </div>
         </div>
       </div>
@@ -90,6 +85,9 @@ export default {
       startDate: '',
       endDate: '',
       hours: [],
+      tempDate: null,
+      displayDate: null,
+      loading: false,
     };
   },
   methods: {
@@ -100,6 +98,7 @@ export default {
       return false;
     },
     search() {
+      this.loading = true;
       let body = {
         search: this.searchID,
         startDate: this.startDate,
@@ -107,16 +106,16 @@ export default {
       };
 
       axios.post('/api/hours/admin/search', body).then((res) => {
+        this.loading = false;
         let message = {
           message: res.data.message,
           error: false,
         };
 
         this.$store.dispatch('pushNotifications', message);
-        console.log(`length of hours: ${res.data.hours.length}`);
-        console.log(res.data.hours);
         this.hours = res.data.hours;
       }).catch((err) => {
+        this.loading = false;
         let message = {
           message: err.response.data.message,
           error: true,
@@ -125,21 +124,41 @@ export default {
         this.$store.dispatch('pushNotifications', message);
       });
     },
-    save(timeIn, mealIn, mealOut, timeOut, Date, userID) {
+    save(hours) {
+      let temptimein = (hours.clock_in == null) ? '00:00' : hours.clock_in;
+      let temptimeout = (hours.clock_out == null) ? '00:00' : hours.clock_out;
+      let tempmealin = (hours.meal_in == null) ? '00:00' : hours.meal_in;
+      let tempmealout = (hours.meal_out == null) ? '00:00' : hours.meal_out;
+      let total = ((parseInt(temptimeout.split(':')[0] * 60) + parseInt(temptimeout.split(':')[1])) - (parseInt(tempmealout.split(':')[0] * 60) + parseInt(tempmealout.split(':')[1])) + (parseInt(tempmealin.split(':')[0] * 60) + parseInt(tempmealin.split(':')[1])) - (parseInt(temptimein.split(':')[0] * 60) + parseInt(temptimein.split(':')[1]))) / 60;
+
       let body = {
-        timein: timeIn,
-        mealout: mealOut,
-        mealin: mealIn,
-        timeout: timeOut,
-        user_id: userID,
-        date: Date,
+        timein: hours.clock_in,
+        mealout: hours.meal_out,
+        mealin: hours.meal_in,
+        timeout: hours.clock_out,
+        user_id: hours.user_id,
+        total,
+        date: hours.date,
       };
+
+      console.log(hours);
+
       axios.post('/api/hours/update', body).then((res) => {
-        this.hours = res.data.hour;
-        this.search();
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+        this.$store.dispatch('pushNotifications', message);
+
+        for (let i = 0; i < this.hours.length; i += 1) {
+          if (this.hours[i].hours_id === hours.hours_id) {
+            this.hours[i].total = total;
+            break;
+          }
+        }
       }).catch((err) => {
         let message = {
-          message: err,
+          message: err.response.data.message,
           error: true,
         };
         this.$store.dispatch('pushNotifications', message);
@@ -192,15 +211,31 @@ export default {
   max-height: 80vh;
   overflow: auto;
   .HoursDisplay {
+    width:100%;
     .result {
+      h3{
+        margin-bottom: 20px;
+      }
       margin-bottom: 20px;
-      margin-top: 40px;
+      margin-top: 20px;
       .row {
+        width:100%;
         display: flex;
         border-bottom: 2px solid #f7f7f7;
         padding-bottom: 5px;
-        .time-slots {
-          margin-right: 10px;
+        flex-wrap: wrap;
+        .time-group{
+          display:flex;
+          margin-bottom: 10px;
+          width:100%;
+          .time-slots {
+            margin-right: 10px;
+            width:100%;
+            input{
+              width:100%;
+              font-family: Arial, Helvetica, sans-serif;
+            }
+          }
         }
       }
     }

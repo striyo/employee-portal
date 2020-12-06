@@ -18,7 +18,7 @@
         <h3>End Date: </h3><input type="date" v-model="endDate" >
       </div>
     </div>
-    <button @click="$emit('search', events)">Submit</button>
+    <button @click="$emit('search', events)">Search</button>
   </form>
   <!-- <SearchResults v-bind:events="events"></SearchResults> -->
 </div>
@@ -46,12 +46,10 @@ export default {
         endDate: this.endDate,
       };
       axios.post('/api/events/search', body).then((res) => {
-        // this.events = res.data.events;
-        // console.log(this.events);
         this.$emit('results', res.data.events);
       }).catch((err) => {
         let message = {
-          message: err,
+          message: err.response.data.message,
           error: true,
         };
         this.$store.dispatch('pushNotifications', message);

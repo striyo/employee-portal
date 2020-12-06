@@ -1,9 +1,13 @@
 <template>
   <div class="dashboard page">
-    <h1>Dashboard</h1>
     <div class="grid">
-      <LogHours/>
-      <ViewEvents/>
+      <div class="col">
+        <LogHours v-if="$store.state.user != null && $store.state.user.salaried == 0"/>
+        <Todos />
+      </div>
+      <div class="col">
+        <ViewEvents/>
+      </div>
     </div>
   </div>
 </template>
@@ -11,27 +15,34 @@
 <script>
 import ViewEvents from '../components/ViewEvents.vue';
 import LogHours from '../components/LogHours.vue';
+import Todos from '../components/Todos.vue';
 
 export default {
   name: 'Dashboard',
   components: {
     ViewEvents,
     LogHours,
+    Todos,
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .grid{
   width:100%;
   display:grid;
   gap: 20px;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr;
+  .col{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
-@media(max-width: 1024px) {
+@media(min-width: 1200px) {
   .grid {
-    grid-template-columns:1fr;
+    grid-template-columns:1fr 1fr;
   }
 }
 </style>
