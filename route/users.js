@@ -42,9 +42,21 @@ const resetLink = 'https://employee.royalemeraldrx.com/changepassword/';
 
 // login status
 router.get('/status', (req, res) => {
-    return res.status(200).json({
+  if(req.session.user){
+    getUser(req.session.user.email).then((user) => {
+      return res.status(200).json({
+        user: user[0],
+      })
+    }).catch(() => {
+      return res.staus(200).json({
         user: req.session.user,
+      });
     });
+  } else {
+    return res.status(200).json({
+      user: null,
+    });
+  }
 });
 
 // Login
@@ -219,6 +231,40 @@ router.post('/forgotpassword', (req, res) => {
   });
 });
 
+// validate reset link
+router.post('/validate/link', (req, res) => {
+  if(!req.body.user_id || !req.body.token){
+    return res.status(422).json({
+      message: "The link is either invalid or has expired. Please send another request if you wish to reset your password"
+    })
+  }
+
+  // get reset token
+  getResetToken(req.body.user_id).then((reset) => {
+    resetToken = reset;
+
+    // check if token exists and not expired
+    if (reset.length == 0) {
+      return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
+    }
+
+    // check if the token is valid
+    return bcrypt.compare(req.body.token, reset[0].token);
+  }).then((compareResult) => {
+    if (!compareResult) {
+      return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
+    }
+
+    return res.status(200).json({
+      message: "Link is valid",
+    });
+  }).catch((err) => {
+    return res.status(500).json({
+      message: err,
+    });
+  })
+})
+
 // change password
 router.post('/changepassword', (req, res) => {
   // check if input is filled
@@ -257,7 +303,7 @@ router.post('/changepassword', (req, res) => {
     return bcrypt.compare(req.body.token, reset[0].token);
   }).then((compareResult) => {
       if (!compareResult) {
-          return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
+        return Promise.reject("The link is either invalid or has expired. Please send another request if you wish to reset your password.", 401);
       }
 
       // hash password
@@ -358,25 +404,32 @@ router.put('/picture',upload.single('picture'), (req,res) => {
   });
 });
 
+// update user information
 router.put('/', (req, res) => {
-    // check if logged and has permission
-    if (req.session.user == null || req.session.user.is_admin == 0) {
-        return res.status(403).json({
-            message: 'Unauthorized',
-        });
-    }
-
-    // query db
-    updateUser(req.body.user).then(() => {
-      return res.status(200).json({
-          message: 'Employee info updated',
-      });
-    }).catch((err) => {
-        console.log(err);
-        return res.status(500).json({
-            message: err,
-        });
+  // check if logged and has permission
+  if (req.session.user == null || req.session.user.is_admin == 0) {
+    return res.status(403).json({
+      message: 'Unauthorized',
     });
+  }
+
+  if(!req.body.user.email || !req.body.user.name ) {
+    return res.status(422).json({
+      message: 'A name and email is required to update a user'
+    });
+  }
+
+  // query db
+  updateUser(req.body.user).then(() => {
+    return res.status(200).json({
+      message: 'Employee info updated',
+    });
+  }).catch((err) => {
+    console.log(err);
+    return res.status(500).json({
+      message: err,
+    });
+  });
 })
 
 // get user profile picture

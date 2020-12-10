@@ -390,8 +390,8 @@ function timesheetTemplate(startDate, endDate, employee, hours) {
 
   let start = new Date(startDate);
   let end = new Date(endDate);
-  start.setDate(start.getDate() + 1)
-  end.setDate(end.getDate() + 1)
+  //start.setDate(start.getDate() + 1)
+  //end.setDate(end.getDate() + 1)
 
   return `
   <!DOCTYPE html>

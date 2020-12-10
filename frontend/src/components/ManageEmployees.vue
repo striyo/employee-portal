@@ -29,26 +29,17 @@
           <div class="form-group">
             <input type="number" placeholder="Rate" v-model="user.rate">
           </div>
-          <div class="form-group">
-            <label>Salaried Employee</label>
-            <select v-model="user.salaried">
-              <option value="1">Yes</option>
-              <option value="0">No</option>
-            </select>
+          <div class="form-checkbox">
+            <template> {{user.salaried = Boolean(user.salaried)}} </template>
+            <input type="checkbox" v-model="user.salaried"> <label>Salaried Employee</label>
           </div>
-          <div class="form-group">
-            <label>Admin</label>
-            <select v-model="user.is_admin">
-              <option value="1">Yes</option>
-              <option value="0">No</option>
-            </select>
+          <div class="form-checkbox">
+            <template> {{user.is_admin = Boolean(user.is_admin)}} </template>
+            <input type="checkbox" v-model="user.is_admin"> <label>Admin User</label>
           </div>
-          <div class="form-group">
-            <label>Active</label>
-            <select v-model="user.is_active">
-              <option value="1">Yes</option>
-              <option value="0">No</option>
-            </select>
+          <div class="form-checkbox">
+            <template> {{user.is_active = Boolean(user.is_active)}} </template>
+            <input type="checkbox" v-model="user.is_active"> <label>An Active User</label>
           </div>
           <button>Save</button>
         </form>
@@ -106,9 +97,9 @@ export default {
           email: user.email,
           phone: user.phone,
           rate: user.rate,
-          salaried: user.salaried === '0' ? 0 : 1,
-          is_admin: user.is_admin === '0' ? 0 : 1,
-          is_active: user.is_active === '0' ? 0 : 1,
+          salaried: user.salaried,
+          is_admin: user.is_admin,
+          is_active: user.is_active,
         },
       };
 

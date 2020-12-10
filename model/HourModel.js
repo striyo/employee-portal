@@ -56,10 +56,15 @@ function updateHours(user_id, hours) {
   //query the databae to find where userID = currentUser and date = today
 
   return new Promise((resolve, reject) => {
+    let total = hours.total;
+    if (hours.timein == null || hours.timeout == null || hours.mealin == null || hours.mealout == null) {
+      total = 0;
+    }
+
     const sql = `
       UPDATE hours SET clock_in = ?, meal_out = ?, meal_in = ?, clock_out = ?, total = ? WHERE user_id = ? AND date = ?
     `;
-    db.query(sql, [hours.timein, hours.mealout, hours.mealin, hours.timeout, hours.total, user_id, hours.date], (err, result) => {
+    db.query(sql, [hours.timein, hours.mealout, hours.mealin, hours.timeout, total, user_id, hours.date], (err, result) => {
       if (err) {
         reject(err);
       }
@@ -76,8 +81,13 @@ function updateHours(user_id, hours) {
  */
 function createHours(user_id, hours) {
   return new Promise((resolve, reject) => {
+    let total = hours.total;
+    if (hours.timein == null || hours.timeout == null || hours.mealin == null || hours.mealout == null) {
+      total = 0;
+    }
+
     const sql = `INSERT INTO hours (user_id, date, clock_in, clock_out, meal_in, meal_out, total) VALUES (?, ?, ?, ?, ?, ?, ?);`;
-    db.query(sql, [user_id, hours.date, hours.timein, hours.timeout, hours.mealin, hours.mealout, hours.total], (err, result) => {
+    db.query(sql, [user_id, hours.date, hours.timein, hours.timeout, hours.mealin, hours.mealout, total], (err, result) => {
       if (err) {
           reject(err);
       }

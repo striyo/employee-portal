@@ -8,6 +8,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const port = 3000 || process.env.PORT;
 const app = express();
 
+/*
 const dbPass = '';
 const sessionStoreOptions = {
   host: 'localhost',
@@ -15,7 +16,7 @@ const sessionStoreOptions = {
   password: dbPass,
   database: 'portal',
 }
-/*
+*/
 const sessionStoreOptions = {
   host: 'taro-tech-db-do-user-8281352-0.b.db.ondigitalocean.com',
   user: 'emerald',
@@ -23,7 +24,6 @@ const sessionStoreOptions = {
   port: 25060,
   database: 'portal'
 }
-*/
 let sessionStore = new MySQLStore(sessionStoreOptions);
 
 // Middleware

@@ -32,6 +32,13 @@ router.post('/timeoff', (req, res) => {
     });
   }
 
+  // check if dates are valid
+  if (req.body.endDate > req.body.startDate) {
+    return res.status(422).json({
+      message: 'Dates entered are invalid',
+    });
+  }
+
   // generate pdf
   pdf.create(template.timeOffTemplate(req.session.user.name, req.body.startDate, req.body.endDate, req.body.reason)).toBuffer((err, buffer) => {
     let mailInfo = {

@@ -13,6 +13,7 @@ import Resources from '../views/Resources.vue';
 import Timesheets from '../views/Timesheets.vue';
 import ForgotPassword from '../views/ForgotPassword.vue';
 import ChangePassword from '../views/ChangePassword.vue';
+import InvalidLink from '../views/InvalidLink.vue';
 
 const routes = [
   {
@@ -29,6 +30,11 @@ const routes = [
     path: '/changepassword/:user_id/:token',
     name: 'Change Password',
     component: ChangePassword,
+  },
+  {
+    path: '/invalidlink',
+    name: 'Invalid Link',
+    component: InvalidLink,
   },
   {
     path: '/dashboard',
@@ -87,7 +93,7 @@ router.beforeEach((to, from, next) => {
         // if logged in, update state.user next
         if (res.data.user) {
           store.dispatch('setUser', res.data.user);
-          if (to.matched.some((record) => record.meta.requiresAuth)) {
+          if (to.matched.some((record) => record.meta.requiresAdmin)) {
             if (res.data.user.is_admin) {
               next();
             } else {

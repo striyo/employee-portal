@@ -73,6 +73,7 @@ export default {
   width: 100%;
   height: 100vh;
   max-height: 100vh;
+  min-height: -webkit-fill-available;
   overflow: auto;
   background:rgba(0,0,0,0.4);
   display: flex;
