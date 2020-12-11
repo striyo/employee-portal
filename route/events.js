@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
     });
   }
 
-  if((!req.body.startTime) || (!req.body.endTime) || (!req.body.startDate) || (!req.body.endDate)) {
+  if((!req.body.startTime) || (!req.body.endTime) || (!req.body.startDate) || (!req.body.endDate) || (!req.body.title)) {
     return res.status(422).json({
       message: "Please input all dates and times",
     });
@@ -130,11 +130,19 @@ router.post('/update', (req, res) => {
       message: "Access Denied",
     });
   }
+
+  if((!req.body.startTime) || (!req.body.endTime) || (!req.body.startDate) || (!req.body.endDate) || (!req.body.title || req.body.title == '')) {
+    return res.status(422).json({
+      message: "Please input all dates and times",
+    });
+  }
+
   if ((req.body.startTime > req.body.endTime) || (req.body.startDate > req.body.endDate)) {
     return res.status(422).json({
       message: "Times do not match time constraint",
     });
   }
+
   let startDate = new Date(req.body.startDate);
   let endDate = new Date(req.body.endDate);
   updateEvent(req.body.id, startDate, endDate, req.body.startTime, req.body.endTime, req.body.title, req.body.bodyParagraph).then(()=>{

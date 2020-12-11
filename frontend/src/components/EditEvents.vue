@@ -88,7 +88,7 @@ export default {
         this.$store.dispatch('pushNotifications', message);
       }).catch((err) => {
         let message = {
-          message: err,
+          message: err.response.data.message,
           error: true,
         };
         this.$store.dispatch('pushNotifications', message);

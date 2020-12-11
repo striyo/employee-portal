@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="report">
+  <form @submit.prevent="report" id="report-form">
     <div class="form-checkbox">
       <h3>Do you wish to remain ANONYMOUS for this report?</h3>
       <input type="checkbox" v-model="anon"> <label>Yes, I want to remain anonymous</label>
@@ -121,6 +121,7 @@ export default {
 
         this.$store.dispatch('pushNotifications', message);
         this.$emit('finished');
+        document.getElementById('report-form').reset();
       }).catch((err) => {
         this.$emit('finished');
         console.log(err);

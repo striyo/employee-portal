@@ -42,9 +42,12 @@ export default {
     submit() {
       let body = {
         title: this.title,
-        startDate: this.startDate,
-        endDate: this.endDate,
+        startDate: this.startDate == '' ? null : this.startDate,
+        endDate: this.endDate == '' ? null : this.endDate,
       };
+
+      console.log(body);
+
       axios.post('/api/events/search', body).then((res) => {
         this.$emit('results', res.data.events);
       }).catch((err) => {
