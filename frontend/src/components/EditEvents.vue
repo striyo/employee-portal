@@ -88,7 +88,7 @@ export default {
         this.$store.dispatch('pushNotifications', message);
       }).catch((err) => {
         let message = {
-          message: err,
+          message: err.response.data.message,
           error: true,
         };
         this.$store.dispatch('pushNotifications', message);
@@ -106,6 +106,7 @@ export default {
   width: 100%;
   height: 100vh;
   max-height: 100vh;
+  min-height: -webkit-fill-available;
   overflow: auto;
   z-index: 2;
   background:rgba(0,0,0,0.4);

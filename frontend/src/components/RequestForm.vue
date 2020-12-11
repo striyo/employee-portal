@@ -14,7 +14,7 @@
         <select v-model="requestType">
           <option value="timeoff">Time Off</option>
           <option value="purchase">Purchase</option>
-          <option value="report">Anonymous Report</option>
+          <option value="report" selected>Anonymous Report</option>
         </select>
       </div>
     </form>
@@ -56,7 +56,6 @@ export default {
 
 @media(min-width:1024px){
   .requestform{
-    max-height:90vh;
     overflow:auto;
   }
 }

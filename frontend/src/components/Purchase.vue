@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     purchase() {
+      this.$emit('loading');
       let body = {
         department: this.department,
         items: this.items,
@@ -43,7 +44,6 @@ export default {
       };
 
       axios.post('/api/resources/purchase', body).then((res) => {
-        this.$emit('loading');
         let message = {
           message: res.data.message,
           error: false,

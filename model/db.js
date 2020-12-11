@@ -1,5 +1,4 @@
 const mysql = require('mysql');
-/*
 const db = mysql.createConnection({
   host: 'taro-tech-db-do-user-8281352-0.b.db.ondigitalocean.com',
   user: 'emerald',
@@ -10,8 +9,8 @@ const db = mysql.createConnection({
   timezone: 'utc',
   multipleStatements: true,
 })
-*/
 
+/*
 const dbPass = '';
 const db = mysql.createConnection({
   host: 'localhost',
@@ -21,6 +20,7 @@ const db = mysql.createConnection({
   database: 'portal',
   multipleStatements: true,
 })
+*/
 
 
 db.connect((err) => {

@@ -22,6 +22,10 @@ export default {
     EmployeeSearch,
     Files,
   },
+  created() {
+    console.log('REsources page');
+    console.log(this.$store.state.user);
+  },
 };
 </script>
 

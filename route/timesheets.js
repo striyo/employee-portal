@@ -38,9 +38,15 @@ router.post('/', (req, res) => {
   }
 
   // check if user passed if not generating for all
-  if( req.body.all == false && req.body.employees.length == 0 ){
+  if( req.body.employees.length == 0 ){
     return res.status(422).json({
-      message: 'Please fill out all required form fields 2',
+      message: 'Please fill out all required form fields',
+    });
+  }
+
+  if( req.body.startDate > req.body.endDate ) {
+    return res.status(422).json({
+      message: "Dates do not meet time constraints",
     });
   }
 
@@ -102,6 +108,12 @@ router.post('/all', (req, res) => {
   if( !req.body.startDate || !req.body.endDate ){
     return res.status(422).json({
       message: 'Please fill out all required form fields',
+    });
+  }
+
+  if( req.body.startDate > req.body.endDate ) {
+    return res.status(422).json({
+      message: "Dates do not meet time constraints",
     });
   }
 

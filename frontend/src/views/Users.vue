@@ -84,6 +84,12 @@ export default {
         this.rate = 0;
         this.salaried = false;
         this.is_admin = false;
+        let message = {
+          message: res.data.message,
+          error: false,
+        };
+
+        this.$store.dispatch('pushNotifications', message);
       }).catch((err) => {
         this.loading = false;
         let message = {

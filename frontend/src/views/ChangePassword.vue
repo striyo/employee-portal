@@ -34,6 +34,24 @@ export default {
       loading: false,
     };
   },
+  created() {
+    let body = {
+      user_id: this.$route.params.user_id,
+      token: this.$route.params.token,
+    };
+
+    axios.post('/api/users/validate/link', body).then(() => {
+
+    }).catch((err) => {
+      this.$router.push('/invalidlink');
+      let message = {
+        message: err.response.data.message,
+        error: true,
+      };
+
+      this.$store.dispatch('pushNotifications', message);
+    });
+  },
   methods: {
     changepassword() {
       this.loading = true;
