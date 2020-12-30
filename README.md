@@ -25,5 +25,4 @@ Go to localhost:8080 after the frontend dev server finishes to view the site
 - Pull from master before working
 - Make a new branch in local environment
 - Push to branch with your name
-- NEVER WORK OFF OF MASTER AND NEVER PUSH TO MASTER 
-  - YOU WILL GET THE WRATH OF GOD IF YOU DO
+
